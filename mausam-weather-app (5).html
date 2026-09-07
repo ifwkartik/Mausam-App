@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mausam — home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Added Noto Sans & Noto Serif for complete Indic script coverage -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;500;600&family=Noto+Serif:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --ink:#152135; --ink-soft:#4a5670; --ink-mute:#8792a3;
+    --mist:#eef2f1; --panel:#ffffff; --hairline:#dfe4e2;
+    --petrol:#1d3a4a; --petrol-soft:#3c5c6c;
+    --marigold:#e08c2b; --marigold-deep:#8a5314; --marigold-bg:#fbeed9;
+    --teal:#1c7a67; --teal-bg:#e2f1ec;
+    --rose:#b8493f; --rose-bg:#f8e6e2;
+    --radius-lg:20px; --radius-md:14px;
+    --font-sans: 'Inter', 'Noto Sans', sans-serif;
+    --font-serif: 'Fraunces', 'Noto Serif', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:#d9dfda; font-family:var(--font-sans); color:var(--ink);
+    display:flex; justify-content:center; padding:32px 12px; -webkit-font-smoothing:antialiased;}
+  .phone{width:390px; max-width:100%; background:var(--mist); border-radius:34px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(21,33,53,0.06), 0 12px 32px rgba(21,33,53,0.14); position:relative;}
+  .scroll{height:800px; overflow-y:auto; scrollbar-width:none; padding:20px 18px 40px;}
+  .scroll::-webkit-scrollbar{display:none;}
+
+  .topline{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px;}
+  .selectors-wrap{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .place-select, .lang-select{
+    appearance:none; -webkit-appearance:none; border:none; background:transparent;
+    font-family:var(--font-sans); font-size:13px; color:var(--ink-soft); font-weight:500;
+    padding:0; display:flex; align-items:center; gap:4px; cursor:pointer; outline:none;
+  }
+  .lang-picker{
+    background:var(--panel); border:1px solid var(--hairline); border-radius:100px;
+    padding:3px 8px; display:inline-flex; align-items:center; gap:4px;
+  }
+  .place-wrap{display:flex; align-items:center; gap:5px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .place-wrap i, .lang-picker i{font-size:14px; color:var(--petrol-soft);}
+  .place-wrap i.chev, .lang-picker i.chev{font-size:11px; margin-left:-1px; color:var(--ink-mute);}
+  .place-wrap #citySelectLabel{max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+  /* ---------- City picker sheet ---------- */
+  .city-picker-title{font-family:var(--font-serif); font-size:18px; font-weight:500; margin:2px 0 14px;}
+  .city-search-row{display:flex; align-items:center; gap:8px; background:var(--mist);
+    border:1px solid var(--hairline); border-radius:var(--radius-md); padding:11px 13px; margin-bottom:14px;}
+  .city-search-row i{font-size:16px; color:var(--ink-mute); flex-shrink:0;}
+  .city-search-row input{border:none; outline:none; background:transparent; font-family:var(--font-sans);
+    font-size:14px; color:var(--ink); flex:1; min-width:0;}
+  .city-search-row input::placeholder{color:var(--ink-mute);}
+  .city-picker-sublabel{font-size:12px; color:var(--ink-mute); font-weight:500; margin:0 0 8px 2px;}
+  .city-results:not(:empty){margin-bottom:16px; background:var(--panel); border:1px solid var(--hairline);
+    border-radius:var(--radius-md); overflow:hidden; max-height:260px; overflow-y:auto;}
+  .city-result{padding:11px 13px; cursor:pointer; border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:10px;}
+  .city-result:last-child{border-bottom:none;}
+  .city-result:active{background:var(--mist);}
+  .city-result i{font-size:15px; color:var(--petrol-soft); flex-shrink:0;}
+  .cr-name{font-size:13.5px; font-weight:500; margin:0;}
+  .cr-sub{font-size:11.5px; color:var(--ink-mute); margin:2px 0 0;}
+  .city-result-loading{padding:12px 13px; font-size:12.5px; color:var(--ink-mute);}
+  .popular-city-grid{display:flex; flex-wrap:wrap; gap:8px; max-height:280px; overflow-y:auto;}
+  .popular-city-chip{font-size:12.5px; font-weight:500; padding:8px 13px; border-radius:100px;
+    border:1px solid var(--hairline); background:var(--panel); color:var(--ink-soft); cursor:pointer;
+    -webkit-tap-highlight-color:transparent; user-select:none; white-space:nowrap;}
+  .popular-city-chip:active{transform:scale(0.96); background:var(--mist);}
+  .popular-city-chip.current{background:var(--petrol); border-color:var(--petrol); color:#fff;}
+  .greeting{font-family:var(--font-serif); font-size:21px; font-weight:500; margin:3px 0 0; letter-spacing:-0.01em;}
+  .greeting-row{display:flex; align-items:center; gap:7px; cursor:pointer; -webkit-tap-highlight-color:transparent; width:fit-content;}
+  .greeting-edit-ic{font-size:13px; color:var(--ink-mute); margin-top:3px;}
+  .avatar{cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .avatar{width:38px; height:38px; border-radius:50%; background:var(--petrol); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-serif);
+    font-size:15px; font-weight:500; flex-shrink:0;}
+
+  .chiprow{display:flex; gap:7px; overflow-x:auto; margin-bottom:16px; scrollbar-width:none; padding-bottom:2px;}
+  .chiprow::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0; font-size:12.5px; font-weight:500; padding:7px 13px; border-radius:100px;
+    border:1px solid var(--hairline); background:var(--panel); color:var(--ink-soft); cursor:pointer;
+    transition:background .18s ease, color .18s ease, border-color .18s ease, transform .12s ease;
+    -webkit-tap-highlight-color:transparent; user-select:none; white-space:nowrap;}
+  .chip:active{transform:scale(0.96);}
+  .chip.on{background:var(--petrol); border-color:var(--petrol); color:#fff;}
+
+  .hero{background:var(--petrol); border-radius:var(--radius-lg); padding:22px 22px 20px; color:#fff;
+    margin-bottom:0; position:relative; overflow:hidden; min-height:150px; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;}
+  .hero:active{background:#1a3441;}
+  .hero-chev{position:absolute; right:16px; bottom:14px; font-size:14px; color:rgba(255,255,255,0.55);
+    transition:transform .3s ease;}
+  .hero.expanded .hero-chev{transform:rotate(180deg);}
+  .hero-top{display:flex; align-items:flex-start; justify-content:space-between;}
+  .temp{font-family:var(--font-serif); font-size:56px; font-weight:400; line-height:1; letter-spacing:-0.02em;}
+  .cond{font-size:13.5px; color:#c7d6d3; margin-top:6px;}
+  .hero-icon{font-size:40px; color:#eecf8e; margin-top:2px;}
+  .sunline{display:flex; gap:16px; margin-top:18px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.14);
+    font-size:12.5px; color:#c7d6d3; flex-wrap:wrap;}
+  .sunline span{display:flex; align-items:center; gap:5px;}
+  .sunline i{font-size:14px; color:#eecf8e;}
+
+  .source-line{font-size:11px; color:var(--ink-mute); margin:0 0 18px 2px; display:flex; align-items:center; gap:6px;}
+  .source-line .dot{width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0;
+    animation:dotLive 2.2s ease-in-out infinite;}
+  .source-line.err .dot{background:var(--rose); animation:none;}
+  @keyframes dotLive{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .source-line button{
+    border:none; background:none; color:var(--petrol-soft); font-size:11px; font-weight:500;
+    text-decoration:underline; cursor:pointer; padding:0; font-family:var(--font-sans);
+  }
+
+  .alert{display:flex; align-items:center; gap:10px; background:var(--marigold-bg); border-radius:var(--radius-md);
+    padding:12px 14px; margin-bottom:20px; font-size:13px; color:var(--marigold-deep);
+    opacity:0; transform:translateY(-6px); animation:slideIn .5s ease .15s forwards;}
+  @keyframes slideIn{to{opacity:1; transform:translateY(0);}}
+  .alert i{font-size:16px; flex-shrink:0;}
+
+  .section{margin-bottom:22px;}
+  .section-label{font-size:12.5px; color:var(--ink-mute); margin:0 0 9px 2px; font-weight:500; display:flex; align-items:center; justify-content:space-between;}
+  .tag-sample{font-size:10px; color:var(--ink-mute); border:1px solid var(--hairline); border-radius:100px; padding:2px 7px; font-weight:500;}
+
+  #dynamic{transition:opacity .22s ease, transform .22s ease;}
+  #dynamic.fading{opacity:0; transform:translateY(4px);}
+
+  .row-card{display:flex; align-items:center; gap:13px; background:var(--panel); border-radius:var(--radius-md);
+    padding:14px 15px; border:1px solid var(--hairline);}
+  .row-card i.lead{font-size:20px; color:var(--petrol-soft); flex-shrink:0;}
+  .row-card .rc-title{font-size:14px; font-weight:500; margin:0;}
+  .row-card .rc-sub{font-size:12.5px; color:var(--ink-mute); margin:2px 0 0;}
+  .row-card .rc-value{margin-left:auto; text-align:right; font-size:14px; font-weight:500; flex-shrink:0;}
+
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .stat-tile{background:var(--panel); border:1px solid var(--hairline); border-radius:var(--radius-md); padding:13px 14px;}
+  .stat-tile i{font-size:17px; color:var(--petrol-soft);}
+  .stat-tile .st-label{font-size:11.5px; color:var(--ink-mute); margin:9px 0 0;}
+  .stat-tile .st-value{font-size:17px; font-weight:500; margin:2px 0 0; font-family:var(--font-serif);}
+
+  .triple{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+  .mini-tile{background:var(--panel); border:1px solid var(--hairline); border-radius:12px; padding:11px 10px;}
+  .mini-tile .mt-label{font-size:11px; color:var(--ink-mute); margin:0;}
+  .mini-tile .mt-value{font-size:14px; font-weight:600; margin:5px 0 0;}
+  .mt-warn{color:var(--marigold-deep);} .mt-danger{color:var(--rose);} .mt-good{color:var(--teal);}
+
+  .stack{display:flex; flex-direction:column; gap:9px;}
+  .empty-note, .load-note{font-size:13px; color:var(--ink-mute); text-align:center; padding:18px 10px;
+    background:var(--panel); border:1px dashed var(--hairline); border-radius:var(--radius-md);}
+  .err-note{font-size:12.5px; color:var(--rose); background:var(--rose-bg); border-radius:var(--radius-md);
+    padding:12px 14px;}
+
+  .discover-strip{display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;}
+  .discover-strip::-webkit-scrollbar{display:none;}
+  .disc-card{flex-shrink:0; width:152px; background:var(--panel); border:1px dashed var(--hairline);
+    border-radius:var(--radius-md); padding:13px;}
+  .disc-card i{font-size:18px; color:var(--ink-mute);}
+  .disc-card p{font-size:12.5px; line-height:1.4; margin:9px 0 0; color:var(--ink-soft);}
+
+  .farm-search-wrap{margin-bottom:12px;}
+  .farm-search-row{display:flex; align-items:center; gap:8px; background:var(--panel);
+    border:1px solid var(--hairline); border-radius:var(--radius-md); padding:10px 12px;}
+  .farm-search-row i{font-size:15px; color:var(--ink-mute); flex-shrink:0;}
+  .farm-search-row input{border:none; outline:none; background:transparent; font-family:var(--font-sans);
+    font-size:13.5px; color:var(--ink); flex:1; min-width:0;}
+  .farm-search-row input::placeholder{color:var(--ink-mute);}
+  .farm-results:not(:empty){margin-top:6px; background:var(--panel); border:1px solid var(--hairline);
+    border-radius:var(--radius-md); overflow:hidden;}
+  .farm-result{padding:10px 13px; cursor:pointer; border-bottom:1px solid var(--hairline);}
+  .farm-result:last-child{border-bottom:none;}
+  .farm-result:active{background:var(--mist);}
+  .fr-name{font-size:13.5px; font-weight:500; margin:0;}
+  .fr-sub{font-size:11.5px; color:var(--ink-mute); margin:2px 0 0;}
+  .farm-result-loading{padding:11px 13px; font-size:12.5px; color:var(--ink-mute);}
+  .farm-location-line{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); margin:2px 2px 10px;}
+  .farm-location-line i{font-size:14px; color:var(--petrol-soft); flex-shrink:0;}
+
+  /* ---------- launch splash ---------- */
+  .splash{
+    position:absolute; inset:0; z-index:30; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:transform .7s cubic-bezier(.65,0,.35,1);
+  }
+  .splash.leaving{transform:translateY(-100%);}
+  .sky{position:absolute; inset:0;}
+  .sky-a{position:absolute; inset:0; background:linear-gradient(180deg,#f3d9a6 0%,#e6a15c 32%,#4a5c6a 78%,var(--petrol) 100%);}
+  .sky-b{position:absolute; inset:0; background:var(--petrol); opacity:0; transition:opacity 1.1s ease;}
+  .cloud{position:absolute; opacity:.5; filter:blur(.5px);}
+  .cloud svg{display:block;}
+  .cloud-1{top:26%; left:-30%; width:150px; animation:driftRight 26s linear infinite;}
+  .cloud-2{top:40%; left:-45%; width:110px; opacity:.35; animation:driftRight 34s linear infinite; animation-delay:-8s;}
+  @keyframes driftRight{to{transform:translateX(340px);}}
+
+  .sun-wrap{position:absolute; left:50%; top:60%; width:64px; height:64px; margin:-32px 0 0 -32px;
+    transition:top 1.4s cubic-bezier(.22,1,.36,1);}
+  .sun-glow{position:absolute; inset:-22px; border-radius:50%;
+    background:radial-gradient(circle, rgba(232,167,73,0.55) 0%, rgba(232,167,73,0) 70%);}
+  .sun-core{position:absolute; inset:0; border-radius:50%; background:#f0b95f;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.25) inset;}
+
+  .splash-foot{position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; margin-top:112px;}
+  .splash-word-wrap{overflow:hidden;}
+  .splash-word{
+    font-family:var(--font-serif); font-size:34px; font-weight:500; color:#fff;
+    margin:0; letter-spacing:-0.01em; clip-path:inset(0 100% 0 0);
+    animation:wipeReveal .85s cubic-bezier(.22,1,.36,1) .25s forwards;
+  }
+  @keyframes wipeReveal{to{clip-path:inset(0 0 0 0);}}
+  .splash-tag{font-size:13px; color:#dbe6de; margin:7px 0 22px; opacity:0; animation:fadeUp .6s ease .55s forwards;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(5px);}to{opacity:1; transform:translateY(0);}}
+  .splash-bar-track{width:120px; height:3px; border-radius:3px; background:rgba(255,255,255,0.18); overflow:hidden;}
+  .splash-bar-fill{height:100%; width:8%; background:var(--marigold); border-radius:3px; transition:width .5s cubic-bezier(.22,1,.36,1);}
+  .splash-label{font-size:11.5px; color:#c7d6d3; margin-top:10px; min-height:14px; transition:opacity .18s ease;}
+
+  .scroll{opacity:0; transform:translateY(14px) scale(.985); transition:opacity .55s ease, transform .55s ease;}
+  .scroll.in{opacity:1; transform:translateY(0) scale(1);}
+
+  /* ---------- hero expand (pressure / dew point / cloud / gusts) ---------- */
+  .hero-expand{max-height:0; overflow:hidden; background:#16303d; border-radius:0 0 var(--radius-lg) var(--radius-lg);
+    margin:-2px 0 12px; transition:max-height .32s cubic-bezier(.22,1,.36,1);}
+  .hero-expand.open{max-height:140px;}
+  .he-grid{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; padding:16px 14px;}
+  .he-tile{text-align:center;}
+  .he-tile i{font-size:16px; color:#8fb2b6;}
+  .he-label{font-size:10px; color:#a7bcc0; margin:6px 0 0; line-height:1.2;}
+  .he-value{font-size:13px; font-weight:600; color:#fff; margin:2px 0 0; font-family:var(--font-serif);}
+
+  /* ---------- live clock + refresh ---------- */
+  .live-clock{font-size:11px; color:var(--ink-mute); font-variant-numeric:tabular-nums; margin:1px 0 0 2px;}
+  .refresh-btn{border:none; background:none; padding:2px; margin-left:auto; cursor:pointer;
+    color:var(--petrol-soft); font-size:13px; display:inline-flex; -webkit-tap-highlight-color:transparent;}
+  .refresh-btn.spinning i{animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .source-line{justify-content:space-between;}
+
+  /* ---------- hourly strip + nowcast ---------- */
+  .hourly-section{margin-bottom:22px;}
+  .nowcast{background:var(--panel); border:1px solid var(--hairline); border-radius:var(--radius-md);
+    padding:12px 14px; margin-bottom:10px;}
+  .nc-summary{font-size:12.5px; color:var(--ink-soft); margin:0 0 9px; display:flex; align-items:center; gap:6px;}
+  .nc-summary i{font-size:14px; color:var(--petrol-soft);}
+  .nc-bars{display:flex; align-items:flex-end; gap:4px; height:30px;}
+  .nc-bar{flex:1; background:var(--petrol-soft); border-radius:2px 2px 0 0; min-height:3px;
+    transition:height .4s ease;}
+  .hourly-strip{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:2px 2px 4px;}
+  .hourly-strip::-webkit-scrollbar{display:none;}
+  .hour-card{flex-shrink:0; width:56px; background:var(--panel); border:1px solid var(--hairline);
+    border-radius:12px; padding:10px 4px 9px; text-align:center; cursor:pointer;
+    transition:transform .12s ease, border-color .15s ease; -webkit-tap-highlight-color:transparent;}
+  .hour-card:active{transform:scale(0.94); border-color:var(--petrol-soft);}
+  .hc-time{font-size:11px; color:var(--ink-mute); margin:0; font-weight:500;}
+  .hc-icon{font-size:18px; color:var(--petrol-soft); margin:7px 0;}
+  .hc-temp{font-size:13.5px; font-weight:600; margin:0;}
+  .hc-pop{font-size:10px; color:var(--teal); margin:4px 0 0; min-height:12px;}
+  .hc-pop-on{font-weight:600;}
+
+  /* ---------- 7-day forecast ---------- */
+  .daily-list{background:var(--panel); border:1px solid var(--hairline); border-radius:var(--radius-md); overflow:hidden;}
+  .day-row{border-bottom:1px solid var(--hairline); cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .day-row:last-child{border-bottom:none;}
+  .day-row-main{display:flex; align-items:center; gap:10px; padding:12px 14px;}
+  .dr-day{font-size:13.5px; font-weight:500; margin:0; width:64px; flex-shrink:0;}
+  .dr-icon{font-size:17px; color:var(--petrol-soft); flex-shrink:0;}
+  .dr-pop{font-size:11px; color:var(--teal); margin:0; width:32px; flex-shrink:0;}
+  .dr-temp{margin:0 0 0 auto; font-size:13.5px; display:flex; gap:6px;}
+  .dr-max{font-weight:600;}
+  .dr-min{color:var(--ink-mute);}
+  .dr-chev{font-size:13px; color:var(--ink-mute); transition:transform .25s ease; flex-shrink:0;}
+  .day-row.open .dr-chev{transform:rotate(180deg);}
+  .day-row-detail{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .day-row.open .day-row-detail{max-height:100px;}
+  .dr-detail-grid{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; padding:0 14px 14px; text-align:center;}
+  .dr-detail-grid i{font-size:14px; color:var(--petrol-soft);}
+  .dr-detail-grid .sg-value{font-size:11.5px; margin:3px 0 0; color:var(--ink-soft);}
+
+  /* ---------- bottom sheet (hour detail) ---------- */
+  .sheet-overlay{position:absolute; inset:0; z-index:40; background:rgba(21,33,53,0.32);
+    opacity:0; pointer-events:none; transition:opacity .25s ease; display:flex; align-items:flex-end;}
+  .sheet-overlay.open{opacity:1; pointer-events:auto;}
+  .sheet{width:100%; background:var(--panel); border-radius:22px 22px 0 0; padding:10px 22px 26px;
+    transform:translateY(100%); transition:transform .3s cubic-bezier(.22,1,.36,1); text-align:center;}
+  .sheet-overlay.open .sheet{transform:translateY(0);}
+  .sheet-handle{width:36px; height:4px; border-radius:3px; background:var(--hairline); margin:0 auto 14px;}
+  .sheet-time{font-size:12.5px; color:var(--ink-mute); margin:0; font-weight:500;}
+  .sheet-main{display:flex; align-items:center; justify-content:center; gap:10px; margin:8px 0 2px;}
+  .sheet-main i{font-size:30px; color:var(--petrol-soft);}
+  .sheet-temp{font-family:var(--font-serif); font-size:38px; font-weight:500;}
+  .sheet-cond{font-size:13px; color:var(--ink-soft); margin:0 0 16px;}
+  .sheet-grid{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;}
+  .sheet-grid .sg-label{font-size:10.5px; color:var(--ink-mute); margin:0;}
+  .sheet-grid .sg-value{font-size:14px; font-weight:600; margin:4px 0 0;}
+  .sheet.left-align{text-align:left;}
+  .sheet-input-row{display:flex; align-items:center; gap:8px; background:var(--mist);
+    border:1px solid var(--hairline); border-radius:var(--radius-md); padding:11px 13px; margin-bottom:16px;}
+  .sheet-input-row i{font-size:16px; color:var(--ink-mute); flex-shrink:0;}
+  .sheet-input-row input{border:none; outline:none; background:transparent; font-family:var(--font-sans);
+    font-size:14px; color:var(--ink); flex:1; min-width:0;}
+  .sheet-input-row input::placeholder{color:var(--ink-mute);}
+  .sheet-primary-btn{width:100%; border:none; background:var(--petrol); color:#fff; font-family:var(--font-sans);
+    font-size:14px; font-weight:600; padding:12px; border-radius:var(--radius-md); cursor:pointer;
+    -webkit-tap-highlight-color:transparent;}
+  .sheet-primary-btn:active{background:#16303d;}
+  .sheet-primary-btn:disabled{opacity:.5; cursor:default;}
+
+  @media (prefers-reduced-motion: reduce){
+    .chip,#dynamic,.alert,.splash,.scroll,.splash-word,.splash-tag,.cloud,.sun-wrap,.source-line .dot,
+    .hero-expand,.hero-chev,.refresh-btn.spinning i,.nc-bar,.day-row-detail,.dr-chev,.sheet,.sheet-overlay{
+      transition:none; animation:none;}
+    .splash-word{clip-path:inset(0 0 0 0);}
+    .splash-tag{opacity:1;}
+    .scroll{opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="splash" id="splash">
+    <div class="sky">
+      <div class="sky-a"></div>
+      <div class="sky-b" id="skyB"></div>
+      <div class="cloud cloud-1"><svg viewBox="0 0 150 60" width="150" height="60"><path d="M20 45c-11 0-18-8-18-17s8-16 18-16c2-11 12-19 24-19 13 0 23 9 25 21 10 1 17 9 17 18 0 10-9 18-20 18H20z" fill="#ffffff"/></svg></div>
+      <div class="cloud cloud-2"><svg viewBox="0 0 150 60" width="110" height="44"><path d="M20 45c-11 0-18-8-18-17s8-16 18-16c2-11 12-19 24-19 13 0 23 9 25 21 10 1 17 9 17 18 0 10-9 18-20 18H20z" fill="#ffffff"/></svg></div>
+      <div class="sun-wrap" id="sunWrap"><div class="sun-glow"></div><div class="sun-core"></div></div>
+    </div>
+    <div class="splash-foot">
+      <div class="splash-word-wrap"><p class="splash-word" id="splashWord">Mausam</p></div>
+      <p class="splash-tag" id="splashTag">Weather, tuned to you</p>
+      <div class="splash-bar-track"><div class="splash-bar-fill" id="splashBar"></div></div>
+      <p class="splash-label" id="splashLabel">Finding your city</p>
+    </div>
+  </div>
+
+  <div class="scroll" id="scrollRoot">
+    <div class="topline">
+      <div>
+        <div class="selectors-wrap">
+          <div class="place-wrap" id="placeWrap" onclick="openCityPicker()" role="button" tabindex="0">
+            <i class="ti ti-map-pin"></i>
+            <span class="place-select" id="citySelectLabel"></span>
+            <i class="ti ti-chevron-down chev"></i>
+          </div>
+          <div class="lang-picker">
+            <i class="ti ti-language"></i>
+            <select class="lang-select" id="langSelect"></select>
+            <i class="ti ti-chevron-down chev"></i>
+          </div>
+        </div>
+        <div class="greeting-row" onclick="openNamePicker()" role="button" tabindex="0">
+          <p class="greeting" id="greeting"></p>
+          <i class="ti ti-pencil greeting-edit-ic"></i>
+        </div>
+        <p class="live-clock" id="liveClock"></p>
+      </div>
+      <div class="avatar" id="avatarLetter" onclick="openNamePicker()" role="button" tabindex="0">A</div>
+    </div>
+
+    <div class="chiprow" id="chiprow"></div>
+
+    <div class="hero" id="hero" onclick="toggleHeroExpand()">
+      <div class="load-note" style="background:transparent;border:none;color:#c7d6d3;">Loading current conditions…</div>
+    </div>
+    <div class="hero-expand" id="heroExpand"></div>
+    <p class="source-line" id="sourceLine">
+      <span class="dot"></span> Fetching from Open-Meteo…
+    </p>
+
+    <div class="hourly-section" id="hourlySection"></div>
+
+    <div id="alertSlot"></div>
+    <div id="dynamic"></div>
+
+    <div class="section" id="dailySection"></div>
+  </div>
+
+  <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet(event)">
+    <div class="sheet" id="sheet" onclick="event.stopPropagation()"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- I18N DICTIONARIES & CONFIG ---------- */
+const LANGUAGES = {
+  en: {
+    code: 'en', name: 'English', native: 'English', apiLang: 'en',
+    greetings: { morning: 'Good morning', afternoon: 'Good afternoon', evening: 'Good evening' },
+    appTitle: 'Mausam', appTag: 'Weather, tuned to you',
+    findingCity: 'Finding your city', readingSky: "Reading today's sky",
+    checkingAir: 'Checking the air', ready: 'Ready',
+    loadingConditions: 'Loading current conditions…',
+    conditionsFail: 'Live conditions unavailable — try Retry below.',
+    retry: 'Retry', humidity: 'humidity', feels: 'feels',
+    liveNotice: 'Live · Open-Meteo · updated {t} · refreshes every 5 min',
+    offlineNotice: "Can't reach Open-Meteo from preview — open file directly in browser.",
+    searching: 'Searching…',
+    noMatch: 'No match found — try a nearby town or block name',
+    searchVillagePlaceholder: 'Search your village or town',
+    changeLocation: 'Change location', citySearchPlaceholder: 'Search any city, town or village in India', popularCities: 'Popular cities',
+    editNameTitle: 'Your name', namePlaceholder: 'Enter your name', save: 'Save',
+    sampleData: 'Sample data', discover: 'Discover',
+    emptyHome: 'Pick what matters to you above and your homepage will build itself around it.',
+    categories: {
+      health: 'Health', fitness: 'Fitness', beach: 'Beach', travel: 'Travel',
+      family: 'Family', garden: 'Farming', commute: 'Commute', events: 'Events'
+    },
+    sections: {
+      fitness: 'Your run today', health: 'Air and skin today', beach: 'Sea conditions',
+      travel: 'Your trips', family: 'School run', garden: 'Soil & farming conditions',
+      commute: 'On the road', events: 'For your outdoor plans',
+      hourly: 'Next 24 hours', daily: 'Next 7 days'
+    },
+    weather: {
+      0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+      45: 'Fog', 48: 'Depositing fog', 51: 'Light drizzle', 53: 'Drizzle',
+      55: 'Dense drizzle', 61: 'Light rain', 63: 'Rain', 65: 'Heavy rain',
+      71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 80: 'Rain showers',
+      81: 'Rain showers', 82: 'Violent showers', 95: 'Thunderstorm',
+      96: 'Thunderstorm with hail', 99: 'Severe thunderstorm', fallback: 'Partly cloudy'
+    },
+    aqi: { good: 'Good', mod: 'Moderate', sens: 'Unhealthy (sensitive)', unh: 'Unhealthy', vUnh: 'Very unhealthy', haz: 'Hazardous' },
+    uv: { low: 'Low', mod: 'Moderate', high: 'High', vHigh: 'Very high', ext: 'Extreme' },
+    comfort: { comfortable: 'Comfortable', warm: 'Warm', hot: 'Hot', vHot: 'Very hot' },
+    soilMoisture: { dry: 'Dry', adequate: 'Adequate', wet: 'Wet' },
+    labels: {
+      bestWindow: 'Best window', windNow: 'Wind now', uvIndex: 'UV index',
+      waveHeight: 'Wave height', wavePeriod: 'Wave period', seaTemp: 'Sea surface temp',
+      surface: 'Surface', rootZone: 'Root zone', deepSoil: 'Deeper soil',
+      soilTemp: 'Soil temperature', frostRisk: 'Frost risk this week',
+      atRisk: 'At risk', none: 'None', rain7Days: 'Rain expected, next 7 days',
+      rainChanceToday: 'Rain chance today', comfortIndex: 'Comfort index',
+      visibilityGood: 'Visibility is good', visibilityReduced: 'Reduced visibility this hour',
+      currRoadVis: 'Current road visibility',
+      irrigationYes: 'Consider irrigation today', irrigationNo: "Rain likely covers today's need",
+      soilCardNote: "Soil moisture/temperature come from Open-Meteo's global model. For exact N-P-K nutrient profiles, check the Soil Health Card scheme.",
+      notCoastal: "{city} is not coastal — switch to Mumbai, Chennai, or Goa for sea data.",
+      now: 'Now', today: 'Today', pressure: 'Pressure', dewPoint: 'Dew point',
+      cloudCover: 'Cloud cover', gusts: 'Gusts',
+      noRainSoon: 'No rain expected in the next 2 hours', rainNow: 'Rain falling right now',
+      rainStartingIn: 'Rain starting in about {m} min'
+    },
+    refresh: 'Refresh now'
+  },
+  hi: {
+    code: 'hi', name: 'Hindi', native: 'हिन्दी', apiLang: 'hi',
+    greetings: { morning: 'शुभ प्रभात', afternoon: 'नमस्ते', evening: 'शुभ संध्या' },
+    appTitle: 'मौसम', appTag: 'मौसम, आपकी ज़रूरत के अनुसार',
+    findingCity: 'शहर ढूंढा जा रहा है', readingSky: 'आसमान का हाल जांच रहे हैं',
+    checkingAir: 'वायु गुणवत्ता जांची जा रही है', ready: 'तैयार है',
+    loadingConditions: 'वर्तमान मौसम लोड हो रहा है…',
+    conditionsFail: 'डेटा उपलब्ध नहीं है — पुनः प्रयास करें।',
+    retry: 'पुनः प्रयास करें', humidity: 'आर्द्रता', feels: 'अनुभव',
+    liveNotice: 'सक्रिय · Open-Meteo · अद्यतन {t} · हर 5 मिनट में ताज़ा',
+    offlineNotice: 'इंटरनेट संपर्क नहीं हो पाया — कृपया पुनः प्रयास करें।',
+    searching: 'खोज जारी है…',
+    noMatch: 'कोई गाँव या कस्बा नहीं मिला — नजदीकी ब्लॉक या शहर खोजें',
+    searchVillagePlaceholder: 'अपना गाँव या कस्बा खोजें',
+    changeLocation: 'स्थान बदलें', citySearchPlaceholder: 'भारत के किसी भी शहर, कस्बे या गाँव को खोजें', popularCities: 'लोकप्रिय शहर',
+    editNameTitle: 'आपका नाम', namePlaceholder: 'अपना नाम दर्ज करें', save: 'सहेजें',
+    sampleData: 'नमूना डेटा', discover: 'अन्य सेवाएं',
+    emptyHome: 'ऊपर अपनी ज़रूरतें चुनें और आपका पृष्ठ तैयार हो जाएगा।',
+    categories: {
+      health: 'स्वास्थ्य', fitness: 'कसरत', beach: 'समुद्र तट', travel: 'यात्रा',
+      family: 'परिवार', garden: 'कृषि एवं खेत', commute: 'सड़क मार्ग', events: 'योजनाएं'
+    },
+    sections: {
+      fitness: 'आज की दौड़/सैर', health: 'हवा और धूप का हाल', beach: 'समुद्र की स्थिति',
+      travel: 'आपकी यात्राएं', family: 'स्कूल और घर वापसी', garden: 'मिट्टी और फसल की स्थिति',
+      commute: 'सड़क पर स्थिति', events: 'बाहरी कार्यक्रमों के लिए'
+    },
+    weather: {
+      0: 'साफ़ आसमान', 1: 'मुख्य रूप से साफ़', 2: 'हल्के बादल', 3: 'घने बादल',
+      45: 'कोहरा', 48: 'जमाव वाला कोहरा', 51: 'हल्की बूंदाबांदी', 53: 'बूंदाबांदी',
+      55: 'तेज़ बूंदाबांदी', 61: 'हल्की बारिश', 63: 'बारिश', 65: 'भारी बारिश',
+      71: 'हल्की बर्फबारी', 73: 'बर्फबारी', 75: 'भारी बर्फ', 80: 'वर्षा की बौछारें',
+      81: 'मध्यम बौछारें', 82: 'तेज़ बौछारें', 95: 'गरज-चमक के साथ बारिश',
+      96: 'ओलावृष्टि के साथ तूफान', 99: 'भीषण आंधी-तूफान', fallback: 'बादल छाए रहेंगे'
+    },
+    aqi: { good: 'उत्तम', mod: 'मध्यम', sens: 'संवेदनशील लोगों के लिए खराब', unh: 'अस्वस्थ', vUnh: 'बहुत अस्वस्थ', haz: 'खतरनाक' },
+    uv: { low: 'निम्न', mod: 'मध्यम', high: 'उच्च', vHigh: 'अति उच्च', ext: 'अत्यधिक' },
+    comfort: { comfortable: 'आरामदायक', warm: 'गर्म', hot: 'बहुत गर्म', vHot: 'अत्यधिक तपन' },
+    soilMoisture: { dry: 'सूखी', adequate: 'उचित नमी', wet: 'गीली' },
+    labels: {
+      bestWindow: 'सर्वोत्तम समय', windNow: 'वर्तमान हवा', uvIndex: 'यूवी इंडेक्स',
+      waveHeight: 'लहरों की ऊंचाई', wavePeriod: 'लहर अंतराल', seaTemp: 'समुद्र की सतह का तापमान',
+      surface: 'सतही मिट्टी', rootZone: 'जड़ क्षेत्र', deepSoil: 'गहरी मिट्टी',
+      soilTemp: 'मिट्टी का तापमान', frostRisk: 'पाला पड़ने का जोखिम',
+      atRisk: 'जोखिम है', none: 'कोई नहीं', rain7Days: 'अगले 7 दिनों की कुल वर्षा',
+      rainChanceToday: 'आज वर्षा की संभावना', comfortIndex: 'सुगमता स्तर',
+      visibilityGood: 'दृश्यता अच्छी है', visibilityReduced: 'दृश्यता कम है',
+      currRoadVis: 'सड़क दृश्यता',
+      irrigationYes: 'आज सिंचाई की आवश्यकता है', irrigationNo: 'वर्षा से पर्याप्त नमी रहेगी',
+      soilCardNote: 'मिट्टी की नमी/तापमान ओपन-मेटिओ मॉडल पर आधारित हैं। N-P-K पोषण कार्ड के लिए सॉइल हेल्थ कार्ड योजना देखें।',
+      notCoastal: '{city} तटीय क्षेत्र नहीं है — तटीय मौसम के लिए मुंबई, चेन्नई या गोवा चुनें।'
+    }
+  },
+  bn: {
+    code: 'bn', name: 'Bengali', native: 'বাংলা', apiLang: 'bn',
+    greetings: { morning: 'সুপ্রভাত', afternoon: 'শুভ অপরাহ্ন', evening: 'শুভ সন্ধ্যা' },
+    appTitle: 'মৌসম', appTag: 'আপনার প্রয়োজনে আবহাওয়া',
+    findingCity: 'শহর খোঁজা হচ্ছে', readingSky: 'আকাশের অবস্থা দেখা হচ্ছে',
+    checkingAir: 'বাতাসের মান পরীক্ষা হচ্ছে', ready: 'প্রস্তুত',
+    loadingConditions: 'বর্তমান আবহাওয়া লোড হচ্ছে…',
+    conditionsFail: 'তথ্য লোড করা যায়নি — পুনরায় চেষ্টা করুন।',
+    retry: 'পুনরায় চেষ্টা', humidity: 'আর্দ্রতা', feels: 'অনুভূতি',
+    liveNotice: 'সরাসরি · Open-Meteo · আপডেট {t} · প্রতি ৫ মিনিটে সতেজ',
+    offlineNotice: 'সার্ভারে সংযোগ করা যায়নি — অনুগ্রহ করে পুনরায় চেষ্টা করুন।',
+    searching: 'অনুসন্ধান চলছে…',
+    noMatch: 'কোনো গ্রাম বা এলাকা পাওয়া যায়নি — নিকটবর্তী ব্লক লিখুন',
+    searchVillagePlaceholder: 'আপনার গ্রাম বা শহর খুঁজুন',
+    changeLocation: 'অবস্থান পরিবর্তন করুন', citySearchPlaceholder: 'ভারতের যেকোনো শহর, শহরাঞ্চল বা গ্রাম খুঁজুন', popularCities: 'জনপ্রিয় শহর',
+    editNameTitle: 'আপনার নাম', namePlaceholder: 'আপনার নাম লিখুন', save: 'সংরক্ষণ করুন',
+    sampleData: 'নমুনা তথ্য', discover: 'আবিষ্কার করুন',
+    emptyHome: 'উপরে আপনার প্রয়োজনীয় বিষয়গুলো নির্বাচন করুন।',
+    categories: {
+      health: 'স্বাস্থ্য', fitness: 'ব্যায়াম', beach: 'সমুদ্রতীর', travel: 'ভ্রমণ',
+      family: 'পরিবার', garden: 'কৃষি ও জমি', commute: 'যাতায়াত', events: 'অনুষ্ঠান'
+    },
+    sections: {
+      fitness: 'আজকের দৌড় ও হাঁটা', health: 'বায়ু ও রোদের মাত্রা', beach: 'সমুদ্রের অবস্থা',
+      travel: 'ভ্রমণ নির্দেশিকা', family: 'স্কুল ও ফেরা', garden: 'মাটি ও চাষের অবস্থা',
+      commute: 'রাস্তার দৃশ্যমানতা', events: 'বাইরের পরিকল্পনা'
+    },
+    weather: {
+      0: 'পরিষ্কার আকাশ', 1: 'বেশিরভাগ পরিষ্কার', 2: 'আংশিক মেঘলা', 3: 'মেঘলা',
+      45: 'কুয়াশা', 48: 'ঘন কুয়াশা', 51: 'হালকা গুঁড়ি গুঁড়ি বৃষ্টি', 53: 'গুঁড়ি গুঁড়ি বৃষ্টি',
+      55: 'ভারী গুঁড়ি গুঁড়ি বৃষ্টি', 61: 'হালকা বৃষ্টি', 63: 'বৃষ্টি', 65: 'ভারী বৃষ্টি',
+      71: 'হালকা তুষারপাত', 73: 'তুষারপাত', 75: 'ভারী তুষার', 80: 'বৃষ্টির ঝাপটা',
+      81: 'মাঝারি বৃষ্টিপাত', 82: 'প্রবল বর্ষণ', 95: 'বজ্রবিদ্যুৎসহ ঝড়',
+      96: 'শিলাবৃষ্টিসহ ঝড়', 99: 'তীব্র বজ্রঝড়', fallback: 'আংশিক মেঘলা'
+    },
+    aqi: { good: 'ভালো', mod: 'সহনীয়', sens: 'সংবেদনশীলদের জন্য অস্বাস্থ্যকর', unh: 'অস্বাস্থ্যকর', vUnh: 'খুব অস্বাস্থ্যকর', haz: 'বিপজ্জনক' },
+    uv: { low: 'কম', mod: 'মাঝারি', high: 'বেশি', vHigh: 'খুব বেশি', ext: 'চরম' },
+    comfort: { comfortable: 'আরামদায়ক', warm: 'উষ্ণ', hot: 'গরম', vHot: 'অতিরিক্ত গরম' },
+    soilMoisture: { dry: 'শুষ্ক', adequate: 'পর্যাপ্ত', wet: 'স্যাঁতসেঁতে' },
+    labels: {
+      bestWindow: 'উপযুক্ত সময়', windNow: 'বর্তমান বাতাস', uvIndex: 'ইউভি সূচক',
+      waveHeight: 'ঢেউয়ের উচ্চতা', wavePeriod: 'ঢেউয়ের ব্যবধান', seaTemp: 'সমুদ্রপৃষ্ঠের তাপমাত্রা',
+      surface: 'উপরিভাগের মাটি', rootZone: 'মূল অঞ্চল', deepSoil: 'গভীর মাটি',
+      soilTemp: 'মাটির তাপমাত্রা', frostRisk: 'তুষারপাতের ঝুঁকি',
+      atRisk: 'ঝুঁকি আছে', none: 'নেই', rain7Days: 'পরবর্তী ৭ দিনের মোট বৃষ্টিপাত',
+      rainChanceToday: 'আজ বৃষ্টির সম্ভাবনা', comfortIndex: 'আরাম সূচক',
+      visibilityGood: 'দৃশ্যমানতা ভালো', visibilityReduced: 'দৃশ্যমানতা কম',
+      currRoadVis: 'রাস্তার দৃশ্যমানতা',
+      irrigationYes: 'আজ সেচের প্রয়োজন হতে পারে', irrigationNo: 'বৃষ্টি থেকেই পর্যাপ্ত আর্দ্রতা মিলবে',
+      soilCardNote: 'মাটির আর্দ্রতা গ্লোবাল মডেল থেকে অনুমিত। N-P-K সারের জন্য সরকারি সয়েল হেলথ কার্ড দেখুন।',
+      notCoastal: '{city} উপকূলীয় অঞ্চল নয় — সমুদ্রের তথ্যের জন্য মুম্বই, চেন্নাই বা গোয়া নির্বাচন করুন।'
+    }
+  },
+  te: {
+    code: 'te', name: 'Telugu', native: 'తెలుగు', apiLang: 'te',
+    greetings: { morning: 'శుభోదయం', afternoon: 'శుభ మధ్యాహ్నం', evening: 'శుభ సాయంత్రం' },
+    appTitle: 'మౌసమ్', appTag: 'వాతావరణం, మీ అవసరాలకు తగినట్లు',
+    findingCity: 'నగరాన్ని వెతుకుతున్నాం', readingSky: 'ఆకాశాన్ని గమనిస్తున్నాం',
+    checkingAir: 'గాలి నాణ్యతను తనిఖీ చేస్తున్నాం', ready: 'సిద్ధంగా ఉంది',
+    loadingConditions: 'వాతావరణ వివరాలు లోడ్ అవుతున్నాయి…',
+    conditionsFail: 'వివరాలు అందలేదు — మళ్ళీ ప్రయత్నించండి.',
+    retry: 'మళ్ళీ ప్రయత్నించండి', humidity: 'తేమ', feels: 'అనిపిస్తున్నది',
+    liveNotice: 'ప్రత్యక్షం · Open-Meteo · సమయం {t} · ప్రతి 5 నిమిషాలకు అప్‌డేట్',
+    offlineNotice: 'సర్వర్ అందుబాటులో లేదు.',
+    searching: 'వెతుకుతున్నాం…',
+    noMatch: 'గ్రామం కనిపించలేదు — సమీప మండలం లేదా పట్టణాన్ని ప్రయత్నించండి',
+    searchVillagePlaceholder: 'మీ గ్రామం లేదా పట్టణం పేరు',
+    changeLocation: 'స్థానాన్ని మార్చండి', citySearchPlaceholder: 'భారతదేశంలోని ఏ నగరం, పట్టణం లేదా గ్రామాన్నైనా వెతకండి', popularCities: 'ప్రసిద్ధ నగరాలు',
+    editNameTitle: 'మీ పేరు', namePlaceholder: 'మీ పేరు నమోదు చేయండి', save: 'సేవ్ చేయండి',
+    sampleData: 'నమూనా డేటా', discover: 'మరిన్ని',
+    emptyHome: 'పైనున్న వర్గాలను ఎంచుకోండి, హోమ్‌పేజీ సిద్ధమవుతుంది.',
+    categories: {
+      health: 'ఆరోగ్యం', fitness: 'వ్యాయామం', beach: 'సముద్ర తీరం', travel: 'ప్రయాణం',
+      family: 'కుటుంబం', garden: 'వ్యవసాయం & నేల', commute: 'రవాణా', events: 'కార్యక్రమాలు'
+    },
+    sections: {
+      fitness: 'ఈరోజు వ్యాయామం', health: 'గాలి & ఎండ తీవ్రత', beach: 'సముద్ర పరిస్థితులు',
+      travel: 'ప్రయాణ సమాచారం', family: 'పాఠశాల ప్రయాణం', garden: 'నేల తేమ & పంటల వివరాలు',
+      commute: 'రహదారి దృశ్యత', events: 'బయటి ప్రణాళికలు'
+    },
+    weather: {
+      0: 'నిర్మలమైన ఆకాశం', 1: 'ఎక్కువగా నిర్మలం', 2: 'పాక్షికంగా మేఘావృతం', 3: 'దట్టమైన మేఘాలు',
+      45: 'మంచు', 48: 'దట్టమైన పొగమంచు', 51: 'తేలికపాటి చినుకులు', 53: 'చినుకులు',
+      55: 'తుంపర్లు', 61: 'తేలికపాటి వర్షం', 63: 'వర్షం', 65: 'భారీ వర్షం',
+      71: 'తేలికపాటి మంచుకురుయుట', 73: 'మంచు', 75: 'భారీ మంచు', 80: 'జల్లులు',
+      81: 'వర్షపు జల్లులు', 82: 'భారీ వర్షపు జల్లులు', 95: 'ఉరుములతో కూడిన వర్షం',
+      96: 'వడగండ్ల వాన', 99: 'తీవ్రమైన తుఫాను', fallback: 'మేఘావృతం'
+    },
+    aqi: { good: 'మంచిది', mod: 'మధ్యస్థం', sens: 'సున్నిత వర్గాలకు ప్రమాదకరం', unh: 'అనారోగ్యకరం', vUnh: 'చాలా అనారోగ్యకరం', haz: 'ప్రమాదకరం' },
+    uv: { low: 'తక్కువ', mod: 'మధ్యస్థం', high: 'ఎక్కువ', vHigh: 'చాలా ఎక్కువ', ext: 'తీవ్రమైనది' },
+    comfort: { comfortable: 'సౌకర్యవంతం', warm: 'వెచ్చగా ఉంది', hot: 'వేడిగా ఉంది', vHot: 'తీవ్రమైన వేడి' },
+    soilMoisture: { dry: 'పొడిగా ఉంది', adequate: 'తగినంత తేమ', wet: 'ఎక్కువ తడి' },
+    labels: {
+      bestWindow: 'అనుకూల సమయం', windNow: 'ప్రస్తుత గాలి వేగం', uvIndex: 'UV సూచిక',
+      waveHeight: 'అలల ఎత్తు', wavePeriod: 'అలల వ్యవధి', seaTemp: 'సముద్ర ఉపరితల ఉష్ణోగ్రత',
+      surface: 'ఉపరితల నేల', rootZone: 'వేరు భాగం', deepSoil: 'లోపలి నేల',
+      soilTemp: 'నేల ఉష్ణోగ్రత', frostRisk: 'మంచు ప్రమాదం',
+      atRisk: 'ప్రమాదం ఉంది', none: 'ఏమీ లేదు', rain7Days: 'రాబోయే 7 రోజుల మొత్తం వర్షపాతం',
+      rainChanceToday: 'నేడు వర్ష సూచన', comfortIndex: 'కంఫర్ట్ స్థాయి',
+      visibilityGood: 'రహదారి దృశ్యత బాగుంది', visibilityReduced: 'దృశ్యత తగ్గింది',
+      currRoadVis: 'రహదారి దృశ్యత',
+      irrigationYes: 'ఈరోజు నీటి తడులు అవసరం కావచ్చు', irrigationNo: 'వర్షం తేమను అందిస్తుంది',
+      soilCardNote: 'నేల తేమ శాటిలైట్ మోడల్ ఆధారితం. ఖచ్చితమైన వివరాలకు సాయిల్ హెల్త్ కార్డు ఉపయోగించండి.',
+      notCoastal: '{city} తీరప్రాంతం కాదు — సముద్ర వివరాలకు ముంబై, చెన్నై లేదా గోవా ఎంచుకోండి.'
+    }
+  },
+  ta: {
+    code: 'ta', name: 'Tamil', native: 'தமிழ்', apiLang: 'ta',
+    greetings: { morning: 'காலை வணக்கம்', afternoon: 'மதிய வணக்கம்', evening: 'மாலை வணக்கம்' },
+    appTitle: 'மௌசம்', appTag: 'உங்களுக்கேற்ற வானிலை',
+    findingCity: 'நகரம் தேடப்படுகிறது', readingSky: 'வானிலை கணிக்கப்படுகிறது',
+    checkingAir: 'காற்று தரம் சோதிக்கப்படுகிறது', ready: 'தயார்',
+    loadingConditions: 'தகவல்கள் ஏற்றப்படுகின்றன…',
+    conditionsFail: 'வானிலை தரவு கிடைக்கவில்லை — மீண்டும் முயற்சிக்கவும்.',
+    retry: 'மீண்டும் முயற்சி', humidity: 'ஈரப்பதம்', feels: 'உணரப்படுவது',
+    liveNotice: 'நேரலை · Open-Meteo · நேரம் {t} · 5 நிமிடங்களுக்கு ஒருமுறை புதுப்பிக்கப்படுகிறது',
+    offlineNotice: 'இணைப்பு தோல்வியடைந்தது.',
+    searching: 'தேடுகிறது…',
+    noMatch: 'கிராமம் கிடைக்கவில்லை — அருகிலுள்ள வட்டாரத்தை முயற்சிக்கவும்',
+    searchVillagePlaceholder: 'உங்கள் கிராமம் அல்லது நகரம்',
+    changeLocation: 'இருப்பிடத்தை மாற்று', citySearchPlaceholder: 'இந்தியாவின் எந்த நகரம், நகரம் அல்லது கிராமத்தையும் தேடுங்கள்', popularCities: 'பிரபலமான நகரங்கள்',
+    editNameTitle: 'உங்கள் பெயர்', namePlaceholder: 'உங்கள் பெயரை உள்ளிடவும்', save: 'சேமி',
+    sampleData: 'மாதிரி தரவு', discover: 'புதிய தகவல்கள்',
+    emptyHome: 'உங்களுக்கு தேவையான விருப்பங்களை மேலே தேர்ந்தெடுக்கவும்.',
+    categories: {
+      health: 'சுகாதாரம்', fitness: 'உடற்பயிற்சி', beach: 'கடற்கரை', travel: 'பயணம்',
+      family: 'குடும்பம்', garden: 'விவசாயம் & மண்', commute: 'போக்குவரத்து', events: 'நிகழ்வுகள்'
+    },
+    sections: {
+      fitness: 'இன்றைய நடைபயிற்சி', health: 'காற்று & வெயில் அளவு', beach: 'கடல் சூழல்',
+      travel: 'பயண வழிகாட்டி', family: 'பள்ளி நேரம்', garden: 'மண் ஈரம் & விவசாய சூழல்',
+      commute: 'சாலை பார்வைத் திறன்', events: 'வெளிப்புற திட்டங்கள்'
+    },
+    weather: {
+      0: 'தெளிவான வானம்', 1: 'பெரும்பாலும் தெளிவானது', 2: 'பகுதி மேகமூட்டம்', 3: 'மேகமூட்டம்',
+      45: 'பனிமூட்டம்', 48: 'அடர்ந்த பனிமூட்டம்', 51: 'லேசான தூறல்', 53: 'தூறல்',
+      55: 'அடர்ந்த தூறல்', 61: 'லேசான மழை', 63: 'மழை', 65: 'கனமழை',
+      71: 'லேசான பனிப்பொழிவு', 73: 'பனிப்பொழிவு', 75: 'கடும் பனிப்பொழிவு', 80: 'மழை தூறல்கள்',
+      81: 'மழைச்சாரல்', 82: 'கடுமையான மழைச்சாரல்', 95: 'இடியுடன் கூடிய மழை',
+      96: 'ஆலங்கட்டி மழை', 99: 'கடும் இடி மின்னல் புயல்', fallback: 'மேகமூட்டம்'
+    },
+    aqi: { good: 'நன்று', mod: 'மிதமானது', sens: 'பாதிப்புக்குள்ளானோருக்கு அபாயம்', unh: 'ஆரோக்கியமற்றது', vUnh: 'மிகவும் ஆபத்தானது', haz: 'அபாயகரமானது' },
+    uv: { low: 'குறைவு', mod: 'மிதம்', high: 'அதிகம்', vHigh: 'மிக அதிகம்', ext: 'தீவிரம்' },
+    comfort: { comfortable: 'இதமானது', warm: 'வெதுவெதுப்பானது', hot: 'சூடானது', vHot: 'கடும் வெப்பம்' },
+    soilMoisture: { dry: 'வறண்டது', adequate: 'போதுமானது', wet: 'ஈரமானது' },
+    labels: {
+      bestWindow: 'ஏற்ற நேரம்', windNow: 'காற்றின் வேகம்', uvIndex: 'UV குறியீடு',
+      waveHeight: 'அலை உயரம்', wavePeriod: 'அலை கால இடைவெளி', seaTemp: 'கடல் வெப்பநிலை',
+      surface: 'மேற்பரப்பு மண்', rootZone: 'வேர் பகுதி', deepSoil: 'ஆழமான மண்',
+      soilTemp: 'மண் வெப்பநிலை', frostRisk: 'பனி உறைவு அபாயம்',
+      atRisk: 'அபாயம் உண்டு', none: 'இல்லை', rain7Days: 'அடுத்த 7 நாள் மழை எதிர்பார்ப்பு',
+      rainChanceToday: 'இன்றைய மழை வாய்ப்பு', comfortIndex: 'சௌகரிய குறியீடு',
+      visibilityGood: 'பார்வை தெளிவு நன்று', visibilityReduced: 'பார்வை குறைந்துள்ளது',
+      currRoadVis: 'சாலை பார்வைத் திறன்',
+      irrigationYes: 'இன்று நீர்ப்பாசனம் தேவைப்படலாம்', irrigationNo: 'மழை ஈரம் போதுமானது',
+      soilCardNote: 'மண் ஈரப்பதம் செயற்கைக்கோள் மாதிரி சார்ந்தது. உர தகவல்களுக்கு மண் வள அட்டையை (Soil Health Card) பார்க்கவும்.',
+      notCoastal: '{city} கடற்கரை பகுதி அல்ல — கடல் தகவல்களுக்கு மும்பை, சென்னை அல்லது கோவாவை தேர்வு செய்யவும்.'
+    }
+  },
+  mr: {
+    code: 'mr', name: 'Marathi', native: 'मराठी', apiLang: 'mr',
+    greetings: { morning: 'शुभ प्रभात', afternoon: 'शुभ दुपार', evening: 'शुभ संध्याकाळ' },
+    appTitle: 'मौसम', appTag: 'हवामान, तुमच्या गरजेनुसार',
+    findingCity: 'शहराचा शोध सुरू आहे', readingSky: 'आकाशाची स्थिती तपासत आहोत',
+    checkingAir: 'हवेची गुणवत्ता तपासत आहोत', ready: 'सज्ज',
+    loadingConditions: 'सध्याचे हवामान लोड होत आहे…',
+    conditionsFail: 'माहिती उपलब्ध नाही — पुन्हा प्रयत्न करा.',
+    retry: 'पुन्हा प्रयत्न करा', humidity: 'आर्द्रता', feels: 'जाणवणारे तापमान',
+    liveNotice: 'थेट · Open-Meteo · वेळ {t} · दर ५ मिनिटांनी अपडेट',
+    offlineNotice: 'सर्व्हरशी संपर्क होऊ शकला नाही.',
+    searching: 'शोधत आहे…',
+    noMatch: 'गाव सापडले नाही — जवळचा तालुका किंवा शहर शोधा',
+    searchVillagePlaceholder: 'तुमचे गाव किंवा शहर शोधा',
+    changeLocation: 'स्थान बदला', citySearchPlaceholder: 'भारतातील कोणतेही शहर, गाव किंवा कस्बा शोधा', popularCities: 'लोकप्रिय शहरे',
+    editNameTitle: 'तुमचे नाव', namePlaceholder: 'तुमचे नाव टाका', save: 'जतन करा',
+    sampleData: 'नमुना डेटा', discover: 'अधिक माहिती',
+    emptyHome: 'तुमच्या गरजेनुसार वरील पर्याय निवडा.',
+    categories: {
+      health: 'आरोग्य', fitness: 'व्यायाम', beach: 'समुद्रकिनारा', travel: 'प्रवास',
+      family: 'कुटुंब', garden: 'शेती व माती', commute: 'रस्ते वाहतूक', events: 'कार्यक्रम'
+    },
+    sections: {
+      fitness: 'आजचा व्यायाम', health: 'हवा आणि उन्हाचा प्रभाव', beach: 'समुद्राची स्थिती',
+      travel: 'प्रवास अंदाज', family: 'शाळा व प्रवास', garden: 'मातीतील ओलावा व शेती',
+      commute: 'रस्त्यावरील दृश्यमानता', events: 'बाहेरील नियोजन'
+    },
+    weather: {
+      0: 'निरभ्र आकाश', 1: 'बहुतांश स्वच्छ', 2: 'काही प्रमाणात ढगाळ', 3: 'पूर्ण ढगाळ',
+      45: 'धुके', 48: 'दाट धुके', 51: 'हलकी रिमझिम', 53: 'रिमझिम पाऊस',
+      55: 'दाट रिमझिम', 61: 'हलका पाऊस', 63: 'पाऊस', 65: 'मुसळधार पाऊस',
+      71: 'हलकी हिमवृष्टी', 73: 'हिमवृष्टी', 75: 'जोरदार हिमवृष्टी', 80: 'पावसाच्या सरी',
+      81: 'मध्यम सरी', 82: 'जोरदार सरी', 95: 'वादळी पाऊस',
+      96: 'गारपिटीसह वादळ', 99: 'तीव्र वादळ', fallback: 'ढगाळ'
+    },
+    aqi: { good: 'चांगली', mod: 'मध्यम', sens: 'संवेदनशील लोकांसाठी अयोग्य', unh: 'अस्वस्थ', vUnh: 'अतिशय अस्वस्थ', haz: 'धोकादायक' },
+    uv: { low: 'कमी', mod: 'मध्यम', high: 'जास्त', vHigh: 'खूप जास्त', ext: 'अति तीव्र' },
+    comfort: { comfortable: 'आल्हाददायक', warm: 'उबदार', hot: 'गरम', vHot: 'अति उष्ण' },
+    soilMoisture: { dry: 'कोरडी', adequate: 'योग्य ओलावा', wet: 'ओलसर' },
+    labels: {
+      bestWindow: 'योग्य वेळ', windNow: 'सध्याचा वारा', uvIndex: 'UV निर्देशांक',
+      waveHeight: 'लाटांची उंची', wavePeriod: 'लाटांचा कालावधी', seaTemp: 'समुद्राचे तापमान',
+      surface: 'वरची माती', rootZone: 'मुळांचा भाग', deepSoil: 'खोल माती',
+      soilTemp: 'मातीचे तापमान', frostRisk: 'धुक्याचा/पाण्याचा धोका',
+      atRisk: 'धोका आहे', none: 'नाही', rain7Days: 'पुढील ७ दिवसांचा अपेक्षित पाऊस',
+      rainChanceToday: 'आज पावसाची शक्यता', comfortIndex: 'आराम निर्देशांक',
+      visibilityGood: 'दृश्यमानता चांगली आहे', visibilityReduced: 'दृश्यमानता कमी आहे',
+      currRoadVis: 'रस्त्यावरील दृश्यमानता',
+      irrigationYes: 'आज सिंचनाची गरज भासू शकते', irrigationNo: 'पावसामुळे पुरेशी ओल राहील',
+      soilCardNote: 'मातीतील ओलावा उपग्रह मॉडेलवर आधारित आहे. अचूक माहितीसाठी मृदा आरोग्य पत्रिका (Soil Health Card) वापरा.',
+      notCoastal: '{city} किनारपट्टीवर नाही — समुद्राच्या स्थितीसाठी मुंबई किंवा गोवा निवडा.'
+    }
+  },
+  gu: {
+    code: 'gu', name: 'Gujarati', native: 'ગુજરાતી', apiLang: 'gu',
+    greetings: { morning: 'સુપ્રભાત', afternoon: 'શુભ બપોર', evening: 'શુભ સંધ્યા' },
+    appTitle: 'મૌસમ', appTag: 'હવામાન, તમારી જરૂરિયાત મુજબ',
+    findingCity: 'શહેર શોધી રહ્યા છીએ', readingSky: 'આકાશની સ્થિતિ ચકાસીએ છીએ',
+    checkingAir: 'હવાની ગુણવત્તા ચકાસીએ છીએ', ready: 'તૈયાર છે',
+    loadingConditions: 'હવામાન લોડ થઈ રહ્યું છે…',
+    conditionsFail: 'વિગતો ઉપલબ્ધ નથી — ફરી પ્રયાસ કરો.',
+    retry: 'ફરી પ્રયાસ કરો', humidity: 'ભેજ', feels: 'અનુભવાતું તાપમાન',
+    liveNotice: 'લાઇવ · Open-Meteo · સમય {t} · દર 5 મિનિટે અપડેટ',
+    offlineNotice: 'નેટવર્ક કનેક્શન મળ્યું નથી.',
+    searching: 'શોધી રહ્યું છે…',
+    noMatch: 'કોઈ ગામ મળ્યું નથી — નજીકનો તાલુકો શોધો',
+    searchVillagePlaceholder: 'તમારું ગામ કે શહેર શોધો',
+    changeLocation: 'સ્થાન બદલો', citySearchPlaceholder: 'ભારતના કોઈપણ શહેર, નગર અથવા ગામ શોધો', popularCities: 'લોકપ્રિય શહેરો',
+    editNameTitle: 'તમારું નામ', namePlaceholder: 'તમારું નામ દાખલ કરો', save: 'સાચવો',
+    sampleData: 'નમૂના માહિતી', discover: 'વધુ જાણો',
+    emptyHome: 'તમારી જરૂરિયાત મુજબ ઉપર વિકલ્પ પસંદ કરો.',
+    categories: {
+      health: 'આરોગ્ય', fitness: 'કસરત', beach: 'દરિયાકિનારો', travel: 'પ્રવાસ',
+      family: 'પરિવાર', garden: 'ખેતી અને જમીન', commute: 'વાહનવ્યવહાર', events: 'આયોજન'
+    },
+    sections: {
+      fitness: 'આજની દોડ/વોકિંગ', health: 'હવા અને તડકો', beach: 'દરિયાઈ સ્થિતિ',
+      travel: 'પ્રવાસ સૂચન', family: 'સ્કૂલ સમય', garden: 'જમીનમાં ભેજ અને ખેતી',
+      commute: 'રસ્તાની દ્રશ્યતા', events: 'બહારના કાર્યક્રમો'
+    },
+    weather: {
+      0: 'ચોખ્ખું આકાશ', 1: 'મોટેભાગે સ્વચ્છ', 2: 'અંશતઃ વાદળછાયું', 3: 'વાદળછાયું',
+      45: 'ધુમ્મસ', 48: 'ગાઢ ધુમ્મસ', 51: 'ઝરમર વરસાદ', 53: 'ધીમો વરસાદ',
+      55: 'ભારે ઝરમર', 61: 'હળવો વરસાદ', 63: 'વરસાદ', 65: 'ભારે વરસાદ',
+      71: 'હળવી હિમવર્ષા', 73: 'બરફવર્ષા', 75: 'ભારે હિમવર્ષા', 80: 'ઝાપટાં',
+      81: 'વરસાદી ઝાપટાં', 82: 'ભારે ઝાપટાં', 95: 'ગાજવીજ સાથે વરસાદ',
+      96: 'કરા સાથે તોફાન', 99: 'ભારે વાવાઝોડું', fallback: 'વાદળછાયું'
+    },
+    aqi: { good: 'સારી', mod: 'મધ્યમ', sens: 'સંવેદનશીલ લોકો માટે નુકસાનકારક', unh: 'અસ્વસ્થ', vUnh: 'ખૂબ અસ્વસ્થ', haz: 'જોખમી' },
+    uv: { low: 'ઓછો', mod: 'મધ્યમ', high: 'વધુ', vHigh: 'ખૂબ વધુ', ext: 'અતિ ભારે' },
+    comfort: { comfortable: 'આરામદાયક', warm: 'હૂંફાળું', hot: 'ગરમ', vHot: 'અતિશય ગરમ' },
+    soilMoisture: { dry: 'સૂકી', adequate: 'પૂરતો ભેજ', wet: 'ભીની' },
+    labels: {
+      bestWindow: 'શ્રેષ્ઠ સમય', windNow: 'પવનની ગતિ', uvIndex: 'UV ઇન્ડેક્સ',
+      waveHeight: 'મોજાંની ઊંચાઈ', wavePeriod: 'મોજાંનો સમયગાળો', seaTemp: 'સમુદ્ર સપાટીનું તાપમાન',
+      surface: 'ઉપરની માટી', rootZone: 'મૂળ વિસ્તાર', deepSoil: 'ઊંડી માટી',
+      soilTemp: 'જમીનનું તાપમાન', frostRisk: 'ઝાકળ/બરફનું જોખમ',
+      atRisk: 'જોખમ છે', none: 'નથી', rain7Days: 'આગામી 7 દિવસનો કુલ વરસાદ',
+      rainChanceToday: 'આજે વરસાદની શક્યતા', comfortIndex: 'સુવિધા સૂચક',
+      visibilityGood: 'દ્રશ્યતા સારી છે', visibilityReduced: 'દ્રશ્યતા ઓછી છે',
+      currRoadVis: 'રસ્તા પર દ્રશ્યતા',
+      irrigationYes: 'આજે પિયતની જરૂર પડી શકે છે', irrigationNo: 'વરસાદથી પૂરતો ભેજ મળશે',
+      soilCardNote: 'જમીનનો ભેજ સેટેલાઇટ મોડેલ આધારિત છે. પોષકતત્ત્વો માટે સોઇલ હેલ્થ કાર્ડ તપાસો.',
+      notCoastal: '{city} દરિયાકાંઠે નથી — દરિયાઈ સ્થિતિ માટે મુંબઈ કે ગોવા પસંદ કરો.'
+    }
+  },
+  kn: {
+    code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ', apiLang: 'kn',
+    greetings: { morning: 'ಶುಭೋದಯ', afternoon: 'ಶುಭ ಮಧ್ಯಾಹ್ನ', evening: 'ಶುಭ ಸಂಜೆ' },
+    appTitle: 'ಮೌಸಮ್', appTag: 'ಹವಾಮಾನ, ನಿಮ್ಮ ಅನುಕೂಲಕ್ಕೆ ತಕ್ಕಂತೆ',
+    findingCity: 'ನಗರವನ್ನು ಹುಡುಕಲಾಗುತ್ತಿದೆ', readingSky: 'ಆಕಾಶದ ಸ್ಥಿತಿ ಪರಿಶೀಲನೆ',
+    checkingAir: 'ವಾಯು ಗುಣಮಟ್ಟ ಪರಿಶೀಲನೆ', ready: 'ಸಿದ್ಧವಾಗಿದೆ',
+    loadingConditions: 'ಹವಾಮಾನ ವಿವರ ಲೋಡ್ ಆಗುತ್ತಿದೆ…',
+    conditionsFail: 'ಮಾಹಿತಿ ಲಭ್ಯವಿಲ್ಲ — ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.',
+    retry: 'ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ', humidity: 'ಆರ್ದ್ರತೆ', feels: 'ಅನುಭವವಾಗುವ ತಾಪಮಾನ',
+    liveNotice: 'ನೇರಪ್ರಸಾರ · Open-Meteo · ಸಮಯ {t} · ಪ್ರತಿ 5 ನಿಮಿಷಕ್ಕೆ ನವೀಕರಣ',
+    offlineNotice: 'ನೆಟ್‌ವರ್ಕ್ ಲಭ್ಯವಿಲ್ಲ.',
+    searching: 'ಹುಡುಕಲಾಗುತ್ತಿದೆ…',
+    noMatch: 'ಗ್ರಾಮ ಕಂಡುಬಂದಿಲ್ಲ — ಹತ್ತಿರದ ತಾಲೂಕನ್ನು ಹುಡುಕಿ',
+    searchVillagePlaceholder: 'ನಿಮ್ಮ ಊರು ಅಥವಾ ಗ್ರಾಮ',
+    changeLocation: 'ಸ್ಥಳ ಬದಲಿಸಿ', citySearchPlaceholder: 'ಭಾರತದ ಯಾವುದೇ ನಗರ, ಪಟ್ಟಣ ಅಥವಾ ಗ್ರಾಮವನ್ನು ಹುಡುಕಿ', popularCities: 'ಜನಪ್ರಿಯ ನಗರಗಳು',
+    editNameTitle: 'ನಿಮ್ಮ ಹೆಸರು', namePlaceholder: 'ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ', save: 'ಉಳಿಸಿ',
+    sampleData: 'ಮಾದರಿ ಮಾಹಿತಿ', discover: 'ಇನ್ನಷ್ಟು',
+    emptyHome: 'ನಿಮ್ಮ ಅಗತ್ಯಕ್ಕೆ ತಕ್ಕಂತೆ ಮೇಲಿನ ವರ್ಗಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+    categories: {
+      health: 'ಆರೋಗ್ಯ', fitness: 'ವ್ಯಾಯಾಮ', beach: 'ಕರಾವಳಿ', travel: 'ಪ್ರವಾಸ',
+      family: 'ಕುಟುಂಬ', garden: 'ಕೃಷಿ & ಮಣ್ಣು', commute: 'ಸಂಚಾರ', events: 'ಯೋಜನೆಗಳು'
+    },
+    sections: {
+      fitness: 'ಇಂದಿನ ಓಟ/ವ್ಯಾಯಾಮ', health: 'ವಾಯು ಮತ್ತು ಬಿಸಿಲಿನ ಪ್ರಮಾಣ', beach: 'ಸಮುದ್ರ ಸ್ಥಿತಿ',
+      travel: 'ಪ್ರಯಾಣ ಮಾಹಿತಿ', family: 'ಶಾಲಾ ಸಮಯ', garden: 'ಮಣ್ಣಿನ ತೇವಾಂಶ ಮತ್ತು ಕೃಷಿ',
+      commute: 'ರಸ್ತೆ ಗೋಚರತೆ', events: 'ಹೊರಾಂಗಣ ಕಾರ್ಯಕ್ರಮಗಳು'
+    },
+    weather: {
+      0: 'ಸ್ವಚ್ಛ ಆಕಾಶ', 1: 'ಹೆಚ್ಚಾಗಿ ಸ್ವಚ್ಛ', 2: 'ಭಾಗಶಃ ಮೋಡ', 3: 'ಮೋಡ ಕವಿದ ವಾತಾವರಣ',
+      45: 'ಮಂಜು', 48: 'ದಟ್ಟ ಮಂಜು', 51: 'ತುಂತುರು ಮಳೆ', 53: 'ಸಣ್ಣ ಮಳೆ',
+      55: 'ದಟ್ಟ ತುಂತುರು', 61: 'ಹಗುರ ಮಳೆ', 63: 'ಸಾಧಾರಣ ಮಳೆ', 65: 'ಭಾರೀ ಮಳೆ',
+      71: 'ಹಗುರ ಹಿಮಪಾತ', 73: 'ಹಿಮಪಾತ', 75: 'ತೀವ್ರ ಹಿಮಪಾತ', 80: 'ಮಳೆ ಹನಿಗಳು',
+      81: 'ವರ್ಷಧಾರೆ', 82: 'ಭಾರೀ ವರ್ಷಧಾರೆ', 95: 'ಗುಡುಗು ಸಹಿತ ಮಳೆ',
+      96: 'ಆಲಿಕಲ್ಲು ಮಳೆ', 99: 'ತೀವ್ರ ಗುಡುಗು ಮಿಂಚು', fallback: 'ಮೋಡ ಕವಿದಿದೆ'
+    },
+    aqi: { good: 'ಉತ್ತಮ', mod: 'ಸಾಧಾರಣ', sens: 'ಸೂಕ್ಷ್ಮ ಜನರಿಗೆ ಹಾನಿಕರ', unh: 'ಅನಾರೋಗ್ಯಕರ', vUnh: 'ಅತ್ಯಂತ ಅನಾರೋಗ್ಯಕರ', haz: 'ಅಪಾಯಕಾರಿ' },
+    uv: { low: 'ಕಡಿಮೆ', mod: 'ಮಧ್ಯಮ', high: 'ಹೆಚ್ಚು', vHigh: 'ತುಂಬಾ ಹೆಚ್ಚು', ext: 'ತೀವ್ರ' },
+    comfort: { comfortable: 'ಹಿತಕರ', warm: 'ಬೆಚ್ಚಗಿದೆ', hot: 'ಬಿಸಿಲು', vHot: 'ವಿಪರೀತ ಸೆಕೆ' },
+    soilMoisture: { dry: 'ಒಣಗಿದೆ', adequate: 'ಸೂಕ್ತ ತೇವಾಂಶ', wet: 'ತೇವ' },
+    labels: {
+      bestWindow: 'ಉತ್ತಮ ಸಮಯ', windNow: 'ಪ್ರಸ್ತುತ ಗಾಳಿ', uvIndex: 'UV ಸೂಚ್ಯಂಕ',
+      waveHeight: 'ಅಲೆಗಳ ಎತ್ತರ', wavePeriod: 'ಅಲೆಗಳ ಅವಧಿ', seaTemp: 'ಸಮುದ್ರದ ತಾಪಮಾನ',
+      surface: 'ಮೇಲ್ಮೈ ಮಣ್ಣು', rootZone: 'ಬೇರು ವಲಯ', deepSoil: 'ಆಳ ಮಣ್ಣು',
+      soilTemp: 'ಮಣ್ಣಿನ ತಾಪಮಾನ', frostRisk: 'ಹಿಮದ ಅಪಾಯ',
+      atRisk: 'ಅಪಾಯವಿದೆ', none: 'ಇಲ್ಲ', rain7Days: 'ಮುಂದಿನ 7 ದಿನಗಳ ಅಂದಾಜು ಮಳೆ',
+      rainChanceToday: 'ಇಂದು ಮಳೆಯ ಸಾಧ್ಯತೆ', comfortIndex: 'ಆರಾಮ ಮಟ್ಟ',
+      visibilityGood: 'ಗೋಚರತೆ ಚೆನ್ನಾಗಿದೆ', visibilityReduced: 'ಗೋಚರತೆ ಕಡಿಮೆಯಾಗಿದೆ',
+      currRoadVis: 'ರಸ್ತೆ ಗೋಚರತೆ',
+      irrigationYes: 'ಇಂದು ನೀರಾವರಿ ಅಗತ್ಯವಿದೆ', irrigationNo: 'ಮಳೆಯಿಂದಲೇ ತೇವಾಂಶ ಸಿಗಲಿದೆ',
+      soilCardNote: 'ಮಣ್ಣಿನ ಮಾಹಿತಿ ಸ್ಯಾಟಲೈಟ್ ಮಾದರಿಯದ್ದಾಗಿದೆ. ನಿಖರ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣಕ್ಕೆ ಸಾಯಿಲ್ ಹೆಲ್ತ್ ಕಾರ್ಡ್ ನೋಡಿ.',
+      notCoastal: '{city} ಕರಾವಳಿ ಪ್ರದೇಶವಲ್ಲ — ಸಮುದ್ರದ ಮಾಹಿತಿಗೆ ಮುಂಬೈ, ಚೆನ್ನೈ ಅಥವಾ ಗೋವಾ ಆಯ್ಕೆಮಾಡಿ.'
+    }
+  },
+  ur: {
+    code: 'ur', name: 'Urdu', native: 'اردو', apiLang: 'ur',
+    greetings: { morning: 'صبح بخیر', afternoon: 'دوپہر بخیر', evening: 'شام بخیر' },
+    appTitle: 'موسم', appTag: 'موسم، آپ کی ضرورت کے مطابق',
+    findingCity: 'شہر تلاش کیا جا رہا ہے', readingSky: 'آسمان کا جائزہ لیا جا رہا ہے',
+    checkingAir: 'ہوا کا معیار چیک ہو رہا ہے', ready: 'تیار ہے',
+    loadingConditions: 'موجودہ موسم لوڈ ہو رہا ہے…',
+    conditionsFail: 'معلومات دستیاب نہیں ہیں — دوبارہ کوشش کریں۔',
+    retry: 'دوبارہ کوشش', humidity: 'نمی', feels: 'احساس',
+    liveNotice: 'براہ راست · Open-Meteo · اپ ڈیٹ {t} · ہر 5 منٹ بعد تازہ',
+    offlineNotice: 'انٹرنیٹ رابطہ نہیں ہو سکا۔',
+    searching: 'تلاش جاری ہے…',
+    noMatch: 'کوئی بستی یا قصبہ نہیں ملا — قریبی شہر تلاش کریں',
+    searchVillagePlaceholder: 'اپنے گاؤں یا قصبے کا نام',
+    changeLocation: 'مقام تبدیل کریں', citySearchPlaceholder: 'بھارت کے کسی بھی شہر، قصبے یا گاؤں کو تلاش کریں', popularCities: 'مقبول شہر',
+    editNameTitle: 'آپ کا نام', namePlaceholder: 'اپنا نام درج کریں', save: 'محفوظ کریں',
+    sampleData: 'نمونہ ڈیٹا', discover: 'مزید خدمات',
+    emptyHome: 'اپنی ترجیحات اوپر منتخب کریں تاکہ ہوم پیج تیار ہو سکے۔',
+    categories: {
+      health: 'صحت', fitness: 'ورزش', beach: 'ساحل', travel: 'سفر',
+      family: 'خاندان', garden: 'زراعت اور مٹی', commute: 'آمد و رفت', events: 'پروگرام'
+    },
+    sections: {
+      fitness: 'آج کی دوڑ/چہل قدمی', health: 'ہوا اور دھوپ کی شدت', beach: 'سمندری صورتحال',
+      travel: 'سفری رہنمائی', family: 'اسکول اور واپسی', garden: 'مٹی کی نمی اور فصلیں',
+      commute: 'راستے کی حد نگاہ', events: 'بیرونی سرگرمیاں'
+    },
+    weather: {
+      0: 'صاف آسمان', 1: 'زیادہ تر صاف', 2: 'جزوی ابر آلود', 3: 'مکمل ابر آلود',
+      45: 'کہر / دھند', 48: 'جمنے والی دھند', 51: 'ہلکی بونداباندی', 53: 'بونداباندی',
+      55: 'تیز بونداباندی', 61: 'ہلکی بارش', 63: 'بارش', 65: 'موسلادھار بارش',
+      71: 'ہلکی برفباری', 73: 'برفباری', 75: 'شدید برفباری', 80: 'بارش کی پھوار',
+      81: 'تیز پھوار', 82: 'شدید بارش', 95: 'گرج چمک کے ساتھ بارش',
+      96: 'ژالہ باری کے ساتھ طوفان', 99: 'شدید آندھی و طوفان', fallback: 'ابر آلود'
+    },
+    aqi: { good: 'بہترین', mod: 'معتدل', sens: 'حساس لوگوں کے لیے مضر', unh: 'غیر صحت بخش', vUnh: 'انتہائی غیر صحت بخش', haz: 'خطرناک' },
+    uv: { low: 'کم', mod: 'معتدل', high: 'زیادہ', vHigh: 'بہت زیادہ', ext: 'شدید' },
+    comfort: { comfortable: 'خوشگوار', warm: 'گرم', hot: 'بہت گرم', vHot: 'شدید تپش' },
+    soilMoisture: { dry: 'خشک', adequate: 'مناسب نمی', wet: 'گیلی' },
+    labels: {
+      bestWindow: 'بہترین وقت', windNow: 'موجودہ ہوا', uvIndex: 'یو وی انڈیکس',
+      waveHeight: 'لہروں کی اونچائی', wavePeriod: 'لہروں کا وقفہ', seaTemp: 'سطح سمندر کا درجہ حرارت',
+      surface: 'اوپری مٹی', rootZone: 'جڑوں کا حصہ', deepSoil: 'گہری مٹی',
+      soilTemp: 'مٹی کا درجہ حرارت', frostRisk: 'پالے کا خطرہ',
+      atRisk: 'خطرہ موجود ہے', none: 'کوئی نہیں', rain7Days: 'اگلے 7 دنوں کی متوقع بارش',
+      rainChanceToday: 'آج بارش کا امکان', comfortIndex: 'آرام دہ انڈیکس',
+      visibilityGood: 'حد نگاہ واضح ہے', visibilityReduced: 'حد نگاہ کم ہے',
+      currRoadVis: 'سڑک پر حد نگاہ',
+      irrigationYes: 'آج آبپاشی کی ضرورت ہو سکتی ہے', irrigationNo: 'بارش سے نمی پوری رہے گی',
+      soilCardNote: 'مٹی کی نمی ماڈل پر مبنی ہے۔ غذائی اجزاء کے لیے سوائل ہیلتھ کارڈ دیکھیں۔',
+      notCoastal: '{city} ساحلی علاقہ نہیں ہے — سمندر کے لیے ممبئی یا گوا منتخب کریں۔'
+    }
+  },
+  pa: {
+    code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ', apiLang: 'pa',
+    greetings: { morning: 'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ', afternoon: 'ਸ਼ੁਭ ਦੁਪਹਿਰ', evening: 'ਸ਼ੁਭ ਸ਼ਾਮ' },
+    appTitle: 'ਮੌਸਮ', appTag: 'ਮੌਸਮ, ਤੁਹਾਡੀ ਲੋੜ ਮੁਤਾਬਕ',
+    findingCity: 'ਸ਼ਹਿਰ ਲੱਭਿਆ ਜਾ ਰਿਹਾ ਹੈ', readingSky: 'ਅਸਮਾਨ ਦੀ ਸਥਿਤੀ ਜਾਂਚ ਰਹੇ ਹਾਂ',
+    checkingAir: 'ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ ਚੈੱਕ ਹੋ ਰਹੀ ਹੈ', ready: 'ਤਿਆਰ ਹੈ',
+    loadingConditions: 'ਮੌਸਮ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…',
+    conditionsFail: 'ਡੇਟਾ ਨਹੀਂ ਮਿਲਿਆ — ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+    retry: 'ਮੁੜ ਕੋਸ਼ਿਸ਼', humidity: 'ਨਮੀ', feels: 'ਮਹਿਸੂਸ',
+    liveNotice: 'ਲਾਈਵ · Open-Meteo · ਸਮਾਂ {t} · ਹਰ 5 ਮਿੰਟ ਬਾਅਦ ਅੱਪਡੇਟ',
+    offlineNotice: 'ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਬਣ ਸਕਿਆ।',
+    searching: 'ਖੋਜ ਜਾਰੀ ਹੈ…',
+    noMatch: 'ਕੋਈ ਪਿੰਡ ਨਹੀਂ ਲੱਭਿਆ — ਨੇੜਲਾ ਸ਼ਹਿਰ ਜਾਂ ਬਲਾਕ ਲੱਭੋ',
+    searchVillagePlaceholder: 'ਆਪਣਾ ਪਿੰਡ ਜਾਂ ਕਸਬਾ ਖੋਜੋ',
+    changeLocation: 'ਟਿਕਾਣਾ ਬਦਲੋ', citySearchPlaceholder: 'ਭਾਰਤ ਦੇ ਕਿਸੇ ਵੀ ਸ਼ਹਿਰ, ਕਸਬੇ ਜਾਂ ਪਿੰਡ ਨੂੰ ਖੋਜੋ', popularCities: 'ਪ੍ਰਸਿੱਧ ਸ਼ਹਿਰ',
+    editNameTitle: 'ਤੁਹਾਡਾ ਨਾਮ', namePlaceholder: 'ਆਪਣਾ ਨਾਮ ਦਰਜ ਕਰੋ', save: 'ਸੰਭਾਲੋ',
+    sampleData: 'ਨਮੂਨਾ ਜਾਣਕਾਰੀ', discover: 'ਹੋਰ ਸੇਵਾਵਾਂ',
+    emptyHome: 'ਉੱਪਰ ਆਪਣੀਆਂ ਲੋੜਾਂ ਚੁਣੋ ਤਾਂ ਜੋ ਹੋਮਪੇਜ ਤਿਆਰ ਹੋ ਸਕੇ।',
+    categories: {
+      health: 'ਸਿਹਤ', fitness: 'ਕਸਰਤ', beach: 'ਸਮੁੰਦਰ ਤੱਟ', travel: 'ਸਫ਼ਰ',
+      family: 'ਪਰਿਵਾਰ', garden: 'ਖੇਤੀਬਾੜੀ ਅਤੇ ਮਿੱਟੀ', commute: 'ਆਵਾਜਾਈ', events: 'ਪ੍ਰੋਗਰਾਮ'
+    },
+    sections: {
+      fitness: 'ਅੱਜ ਦੀ ਦੌੜ/ਸੈਰ', health: 'ਹਵਾ ਅਤੇ ਧੁੱਪ ਦਾ ਹਾਲ', beach: 'ਸਮੁੰਦਰੀ ਸਥਿਤੀ',
+      travel: 'ਯਾਤਰਾ ਸਲਾਹ', family: 'ਸਕੂਲ ਸਮਾਂ', garden: 'ਮਿੱਟੀ ਦੀ ਨਮੀ ਅਤੇ ਖੇਤੀ',
+      commute: 'ਸੜਕ ਦੀ ਦਿੱਖ', events: 'ਬਾਹਰੀ ਪ੍ਰੋਗਰਾਮ'
+    },
+    weather: {
+      0: 'ਸਾਫ਼ ਅਸਮਾਨ', 1: 'ਜ਼ਿਆਦਾਤਰ ਸਾਫ਼', 2: 'ਅੰਸ਼ਕ ਬੱਦਲਵਾਈ', 3: 'ਪੂਰੀ ਬੱਦਲਵਾਈ',
+      45: 'ਧੁੰਦ', 48: 'ਜੰਮਣ ਵਾਲੀ ਧੁੰਦ', 51: 'ਹਲਕੀ ਬੂੰਦਾ-ਬਾਂਦੀ', 53: 'ਬੂੰਦਾ-ਬਾਂਦੀ',
+      55: 'ਸੰਘਣੀ ਬੂੰਦਾ-ਬਾਂਦੀ', 61: 'ਹਲਕਾ ਮੀਂਹ', 63: 'ਮੀਂਹ', 65: 'ਭਾਰੀ ਮੀਂਹ',
+      71: 'ਹਲਕੀ ਬਰਫ਼ਬਾਰੀ', 73: 'ਬਰਫ਼ਬਾਰੀ', 75: 'ਭਾਰੀ ਬਰਫ਼', 80: 'ਫੁਹਾਰਾਂ',
+      81: 'ਮੀਂਹ ਦੀਆਂ ਫੁਹਾਰਾਂ', 82: 'ਤੇਜ਼ ਬੁਛਾੜਾਂ', 95: 'ਗਰਜ-ਚਮਕ ਨਾਲ ਮੀਂਹ',
+      96: 'ਗੜ੍ਹੇਮਾਰੀ ਨਾਲ ਤੂਫ਼ਾਨ', 99: 'ਭਾਰੀ ਤੂਫ਼ਾਨ', fallback: 'ਬੱਦਲਵਾਈ'
+    },
+    aqi: { good: 'ਵਧੀਆ', mod: 'ਦਰਮਿਆਨਾ', sens: 'ਨਾਜ਼ੁਕ ਲੋਕਾਂ ਲਈ ਮਾੜਾ', unh: 'ਅਸਿਹਤਮੰਦ', vUnh: 'ਬਹੁਤ ਅਸਿਹਤਮੰਦ', haz: 'ਖ਼ਤਰਨਾਕ' },
+    uv: { low: 'ਘੱਟ', mod: 'ਦਰਮਿਆਨਾ', high: 'ਜ਼ਿਆਦਾ', vHigh: 'ਬਹੁਤ ਜ਼ਿਆਦਾ', ext: 'ਬਹੁਤ ਤਿੱਖੀ' },
+    comfort: { comfortable: 'ਸੁਹਾਵਣਾ', warm: 'ਨਿੱਘਾ', hot: 'ਗਰਮ', vHot: 'ਬਹੁਤ ਜ਼ਿਆਦਾ ਗਰਮ' },
+    soilMoisture: { dry: 'ਸੁੱਕੀ', adequate: 'ਸਹੀ ਨਮੀ', wet: 'ਗਿੱਲੀ' },
+    labels: {
+      bestWindow: 'ਵਧੀਆ ਸਮਾਂ', windNow: 'ਮੌਜੂਦਾ ਹਵਾ', uvIndex: 'ਯੂਵੀ ਇੰਡੈਕਸ',
+      waveHeight: 'ਛੱਲਾਂ ਦੀ ਉਚਾਈ', wavePeriod: 'ਛੱਲਾਂ ਦਾ ਵਕਫ਼ਾ', seaTemp: 'ਸਮੁੰਦਰ ਦਾ ਤਾਪਮਾਨ',
+      surface: 'ਸਤਹੀ ਮਿੱਟੀ', rootZone: 'ਜੜ੍ਹਾਂ ਦਾ ਹਿੱਸਾ', deepSoil: 'ਡੂੰਘੀ ਮਿੱਟੀ',
+      soilTemp: 'ਮਿੱਟੀ ਦਾ ਤਾਪਮਾਨ', frostRisk: 'ਕੋਰਾ ਪੈਣ ਦਾ ਖ਼ਤਰਾ',
+      atRisk: 'ਖ਼ਤਰਾ ਹੈ', none: 'ਕੋਈ ਨਹੀਂ', rain7Days: 'ਅਗਲੇ 7 ਦਿਨਾਂ ਦਾ ਮੀਂਹ',
+      rainChanceToday: 'ਅੱਜ ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ', comfortIndex: 'ਆਰਾਮ ਦਰਜਾ',
+      visibilityGood: 'ਦਿੱਖ ਸਾਫ਼ ਹੈ', visibilityReduced: 'ਦਿੱਖ ਘਟੀ ਹੋਈ ਹੈ',
+      currRoadVis: 'ਸੜਕ ਉੱਤੇ ਦਿੱਖ',
+      irrigationYes: 'ਅੱਜ ਪਾਣੀ ਲਾਉਣ ਦੀ ਲੋੜ ਪੈ ਸਕਦੀ ਹੈ', irrigationNo: 'ਮੀਂਹ ਨਾਲ ਲੋੜ ਪੂਰੀ ਰਹੇਗੀ',
+      soilCardNote: 'ਮਿੱਟੀ ਦੀ ਨਮੀ ਗਲੋਬਲ ਮਾਡਲ ਅਧਾਰਿਤ ਹੈ। ਖਾਦ ਦੀ ਸਹੀ ਜਾਣਕਾਰੀ ਲਈ ਸੋਇਲ ਹੈਲਥ ਕਾਰਡ ਵੇਖੋ।',
+      notCoastal: '{city} ਸਮੁੰਦਰੀ ਇਲਾਕਾ ਨਹੀਂ ਹੈ — ਸਮੁੰਦਰ ਦੇ ਹਾਲ ਲਈ ਮੁੰਬਈ ਜਾਂ ਗੋਆ ਚੁਣੋ।'
+    }
+  },
+  ml: {
+    code: 'ml', name: 'Malayalam', native: 'മലയാളം', apiLang: 'ml',
+    greetings: { morning: 'സുപ്രഭാതം', afternoon: 'ശുഭ ഉച്ചനേരം', evening: 'ശുഭസായാഹ്നം' },
+    appTitle: 'മൗസം', appTag: 'കാലാവസ്ഥ, നിങ്ങൾക്ക് അനുയോജ്യമായ രീതിയിൽ',
+    findingCity: 'നഗരം കണ്ടെത്തുന്നു', readingSky: 'ആകാശാവസ്ഥ പരിശോധിക്കുന്നു',
+    checkingAir: 'വായു ഗുണനിലവാരം അളക്കുന്നു', ready: 'തയ്യാർ',
+    loadingConditions: 'വിവരങ്ങൾ ലഭ്യമാക്കുന്നു…',
+    conditionsFail: 'വിവരങ്ങൾ ലഭ്യമല്ല — വീണ്ടും ശ്രമിക്കുക.',
+    retry: 'വീണ്ടും ശ്രമിക്കുക', humidity: 'ഈർപ്പം', feels: 'അനുഭവപ്പെടുന്നത്',
+    liveNotice: 'തത്സമയം · Open-Meteo · സമയം {t} · 5 മിനിറ്റിൽ പുതുക്കുന്നു',
+    offlineNotice: 'ഇന്റർനെറ്റ് ലഭ്യമല്ല.',
+    searching: 'തിരയുന്നു…',
+    noMatch: 'ഗ്രാമം കണ്ടെത്താനായില്ല — അടുത്തുള്ള താലൂക്കോ നഗരമോ തിരയുക',
+    searchVillagePlaceholder: 'നിങ്ങളുടെ ഗ്രാമമോ പട്ടണമോ നൽകുക',
+    changeLocation: 'സ്ഥലം മാറ്റുക', citySearchPlaceholder: 'ഇന്ത്യയിലെ ഏതൊരു നഗരം, പട്ടണം അല്ലെങ്കിൽ ഗ്രാമവും തിരയുക', popularCities: 'ജനപ്രിയ നഗരങ്ങൾ',
+    editNameTitle: 'നിങ്ങളുടെ പേര്', namePlaceholder: 'നിങ്ങളുടെ പേര് നൽകുക', save: 'സേവ് ചെയ്യുക',
+    sampleData: 'മാതൃകാ വിവരങ്ങൾ', discover: 'മറ്റു വിവരങ്ങൾ',
+    emptyHome: 'നിങ്ങൾക്ക് ആവശ്യമുള്ള വിഭാഗങ്ങൾ മുകളിൽ തിരഞ്ഞെടുക്കുക.',
+    categories: {
+      health: 'ആരോഗ്യം', fitness: 'വ്യായാമം', beach: 'തീരം', travel: 'യാത്ര',
+      family: 'കുടുംബം', garden: 'കൃഷിയും മണ്ണും', commute: 'ഗതാഗതം', events: 'പരിപാടികൾ'
+    },
+    sections: {
+      fitness: 'ഇന്നത്തെ നടത്തം/ഓട്ടം', health: 'വായുവും വെയിലും', beach: 'കടൽ അവസ്ഥ',
+      travel: 'യാത്രാ വിവരം', family: 'സ്കൂൾ സമയം', garden: 'മണ്ണിലെ ഈർപ്പവും കൃഷിയും',
+      commute: 'റോഡിലെ കാഴ്ച', events: 'പുറം പരിപാടികൾ'
+    },
+    weather: {
+      0: 'തെളിഞ്ഞ ആകാശം', 1: 'മിക്കവാറും തെളിഞ്ഞത്', 2: 'ഭാഗികമായി മേഘാവൃതം', 3: 'മേഘാവൃതം',
+      45: 'മൂടൽമഞ്ഞ്', 48: 'കനത്ത മൂടൽമഞ്ഞ്', 51: 'ചെറിയ ചാറ്റൽമഴ', 53: 'ചാറ്റൽമഴ',
+      55: 'ശക്തമായ ചാറ്റൽമഴ', 61: 'നേരിയ മഴ', 63: 'മഴ', 65: 'കനത്ത മഴ',
+      71: 'നേരിയ മഞ്ഞുവീഴ്ച', 73: 'മഞ്ഞുവീഴ്ച', 75: 'കനത്ത മഞ്ഞുവീഴ്ച', 80: 'മഴത്തുള്ളികൾ',
+      81: 'മഴച്ചാറ്റൽ', 82: 'കനത്ത വർഷം', 95: 'ഇടിമിന്നലോട് കൂടിയ മഴ',
+      96: 'ആലിപ്പഴ വർഷം', 99: 'ശക്തമായ ഇടിമിന്നൽ ചുഴലി', fallback: 'മേഘാവൃതം'
+    },
+    aqi: { good: 'നല്ലത്', mod: 'മിതമായത്', sens: 'അസ്വസ്ഥത ഉണ്ടാക്കുന്നത്', unh: 'ഗുണകരമല്ല', vUnh: 'വളരെ ദോഷകരം', haz: 'അപകടകരം' },
+    uv: { low: 'കുറവ്', mod: 'മിതം', high: 'കൂടുതൽ', vHigh: 'വളരെ കൂടുതൽ', ext: 'തീവ്രം' },
+    comfort: { comfortable: 'സുഖകരം', warm: 'ചൂടുള്ളത്', hot: 'കഠിന ചൂട്', vHot: 'അത്യുഷ്ണം' },
+    soilMoisture: { dry: 'വരണ്ടത്', adequate: 'ആവശ്യത്തിന് ഈർപ്പം', wet: 'നനഞ്ഞത്' },
+    labels: {
+      bestWindow: 'അനുയോജ്യ സമയം', windNow: 'കാറ്റിന്റെ വേഗത', uvIndex: 'UV സൂചിക',
+      waveHeight: 'തിരമാല ഉയരം', wavePeriod: 'തിരമാല ദൈർഘ്യം', seaTemp: 'കടൽ ഉപരിതല താപനില',
+      surface: 'ഉപരിതല മണ്ണ്', rootZone: 'വേരുപടലം', deepSoil: 'അടിത്തട്ട് മണ്ണ്',
+      soilTemp: 'മണ്ണിലെ താപനില', frostRisk: 'മഞ്ഞുറയൽ സാധ്യത',
+      atRisk: 'സാധ്യതയുണ്ട്', none: 'ഇല്ല', rain7Days: 'അടുത്ത 7 ദിവസത്തെ മഴ',
+      rainChanceToday: 'ഇന്ന് മഴ സാധ്യത', comfortIndex: 'കംഫർട്ട് നില',
+      visibilityGood: 'കാഴ്ച വ്യക്തമാണ്', visibilityReduced: 'കാഴ്ച കുറവാണ്',
+      currRoadVis: 'റോഡിലെ കാഴ്ച',
+      irrigationYes: 'ഇന്ന് നനയ്ക്കേണ്ടി വന്നേക്കാം', irrigationNo: 'മഴ മതിയായ ഈർപ്പം നൽകും',
+      soilCardNote: 'മണ്ണിലെ ഈർപ്പം സാറ്റലൈറ്റ് അനുമാനമാണ്. രാസവള വിവരങ്ങൾക്ക് സോയിൽ ഹെൽത്ത് കാർഡ് പരിശോധിക്കുക.',
+      notCoastal: '{city} തീരപ്രദേശമല്ല — കടൽ വിവരങ്ങൾക്ക് മുംബൈയോ ഗോവയോ തിരഞ്ഞെടുക്കുക.'
+    }
+  },
+  or: {
+    code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ', apiLang: 'or',
+    greetings: { morning: 'ଶୁଭ ସକାଳ', afternoon: 'ଶୁଭ ଅପରାହ୍ନ', evening: 'ଶୁଭ ସନ୍ଧ୍ୟା' },
+    appTitle: 'ମୌସମ', appTag: 'ପାଣିପାଗ, ଆପଣଙ୍କ ଆବଶ୍ୟକତା ଅନୁସାରେ',
+    findingCity: 'ସହର ଖୋଜା ଚାଲିଛି', readingSky: 'ଆକାଶ ନିରୀକ୍ଷଣ ଚାଲିଛି',
+    checkingAir: 'ବାୟୁମାନ ଯାଞ୍ଚ ହେଉଛି', ready: 'ପ୍ରସ୍ତୁତ',
+    loadingConditions: 'ପାଣିପାଗ ତଥ୍ୟ ଆସୁଛି…',
+    conditionsFail: 'ତଥ୍ୟ ମିଳିଲା ନାହିଁ — ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ।',
+    retry: 'ପୁନଃ ଚେଷ୍ଟା', humidity: 'ଆର୍ଦ୍ରତା', feels: 'ଅନୁଭୂତ',
+    liveNotice: 'ପ୍ରତ୍ୟକ୍ଷ · Open-Meteo · ସମୟ {t} · ପ୍ରତି ୫ ମିନିଟରେ ଅପଡେଟ୍',
+    offlineNotice: 'ସଂଯୋଗ ହୋଇପାରିଲା ନାହିଁ।',
+    searching: 'ସନ୍ଧାନ ଚାଲିଛି…',
+    noMatch: 'ଗାଁ ମିଳିଲା ନାହିଁ — ନିକଟସ୍ଥ ବ୍ଲକ କିମ୍ବା ସହର ଖୋଜନ୍ତୁ',
+    searchVillagePlaceholder: 'ଆପଣଙ୍କ ଗାଁ କିମ୍ବା ସହର ଖୋଜନ୍ତୁ',
+    changeLocation: 'ସ୍ଥାନ ପରିବର୍ତ୍ତନ କରନ୍ତୁ', citySearchPlaceholder: 'ଭାରତର ଯେକୌଣସି ସହର, ସହରାଞ୍ଚଳ କିମ୍ବା ଗାଁ ଖୋଜନ୍ତୁ', popularCities: 'ଲୋକପ୍ରିୟ ସହରଗୁଡ଼ିକ',
+    editNameTitle: 'ଆପଣଙ୍କ ନାମ', namePlaceholder: 'ଆପଣଙ୍କ ନାମ ଲେଖନ୍ତୁ', save: 'ସେଭ୍ କରନ୍ତୁ',
+    sampleData: 'ନମୁନା ତଥ୍ୟ', discover: 'ଅନ୍ୟାନ୍ୟ',
+    emptyHome: 'ଉପରେ ନିଜ ପସନ୍ଦ ବାଛନ୍ତୁ ଏବଂ ଆପଣଙ୍କ ପୃଷ୍ଠା ପ୍ରସ୍ତୁତ ହୋଇଯିବ।',
+    categories: {
+      health: 'ସ୍ୱାସ୍ଥ୍ୟ', fitness: 'ବ୍ୟାୟାମ', beach: 'ସମୁଦ୍ରକୂଳ', travel: 'ଯାତ୍ରା',
+      family: 'ପରିବାର', garden: 'କୃଷି ଓ ମାଟି', commute: 'ଯାତାୟାତ', events: 'କାର୍ଯ୍ୟକ୍ରମ'
+    },
+    sections: {
+      fitness: 'ଆଜିର ପ୍ରାତଃଭ୍ରମଣ', health: 'ବାୟୁ ଓ ଖରାର ପ୍ରଭାବ', beach: 'ସମୁଦ୍ର ସ୍ଥିତି',
+      travel: 'ଭ୍ରମଣ ସୂଚନା', family: 'ବିଦ୍ୟାଳୟ ସମୟ', garden: 'ମାଟିର ଆର୍ଦ୍ରତା ଓ ଚାଷ',
+      commute: 'ରାସ୍ତାର ଦୃଶ୍ୟମାନତା', events: 'ବାହାର କାର୍ଯ୍ୟକ୍ରମ'
+    },
+    weather: {
+      0: 'ନିର୍ମଳ ଆକାଶ', 1: 'ପ୍ରାୟ ନିର୍ମଳ', 2: 'ଆଂଶିକ ମେଘୁଆ', 3: 'ମେଘାଚ୍ଛନ୍ନ',
+      45: 'କୁହୁଡ଼ି', 48: 'ଘନ କୁହୁଡ଼ି', 51: 'ହାଲୁକା ଛିଞ୍ଚା ବର୍ଷା', 53: 'ଛିଞ୍ଚା ବର୍ଷା',
+      55: 'ଘନ ଛିଞ୍ଚା ବର୍ଷା', 61: 'ହାଲୁକା ବର୍ଷା', 63: 'ବର୍ଷା', 65: 'ପ୍ରବଳ ବର୍ଷା',
+      71: 'ହାଲୁକା ତୁଷାରପାତ', 73: 'ତୁଷାରପାତ', 75: 'ପ୍ରବଳ ତୁଷାର', 80: 'ବର୍ଷା ଝଲକ',
+      81: 'ମଧ୍ୟମ ବର୍ଷା', 82: 'ଭୀଷଣ ବର୍ଷା', 95: 'ବିଜୁଳି ଘଡ଼ଘଡ଼ି ସହ ବର୍ଷା',
+      96: 'କୁଆପଥର ସହ ବର୍ଷା', 99: 'ଭୟଙ୍କର ଝଡ଼ବର୍ଷା', fallback: 'ମେଘୁଆ'
+    },
+    aqi: { good: 'ଭଲ', mod: 'ମଧ୍ୟମ', sens: 'ଅସୁସ୍ଥ (ସମ୍ବେଦନଶୀଳ)', unh: 'ଅସ୍ୱାସ୍ଥ୍ୟକର', vUnh: 'ଖୁବ୍ ଅସ୍ୱାସ୍ଥ୍ୟକର', haz: 'ବିପଜ୍ଜନକ' },
+    uv: { low: 'କମ୍', mod: 'ମଧ୍ୟମ', high: 'ଅଧିକ', vHigh: 'ଖୁବ୍ ଅଧିକ', ext: 'ଅତ୍ୟଧିକ' },
+    comfort: { comfortable: 'ଆରାମଦାୟକ', warm: 'ଉଷୁମ', hot: 'ଗରମ', vHot: 'ଭୀଷଣ ତାତି' },
+    soilMoisture: { dry: 'ଶୁଖିଲା', adequate: 'ଉପଯୁକ୍ତ ଆର୍ଦ୍ରତା', wet: 'ଓଦା' },
+    labels: {
+      bestWindow: 'ଉପଯୁକ୍ତ ସମୟ', windNow: 'ପବନର ବେଗ', uvIndex: 'ୟୁଭି ସୂଚକ',
+      waveHeight: 'ଢେଉର ଉଚ୍ଚତା', wavePeriod: 'ଢେଉ ବ୍ୟବଧାନ', seaTemp: 'ସମୁଦ୍ର ପତ୍ତନର ତାପମାତ୍ରା',
+      surface: 'ଉପର ମାଟି', rootZone: 'ଚେର ଅଞ୍ଚଳ', deepSoil: 'ତଳ ମାଟି',
+      soilTemp: 'ମାଟିର ତାପମାତ୍ରା', frostRisk: 'ତୁଷାରପାତ ଆଶଙ୍କା',
+      atRisk: 'ଆଶଙ୍କା ଅଛି', none: 'ନାହିଁ', rain7Days: 'ଆଗାମୀ ୭ ଦିନର ବର୍ଷା ସମ୍ଭାବନା',
+      rainChanceToday: 'ଆଜି ବର୍ଷା ସମ୍ଭାବନା', comfortIndex: 'ଆରାମ ସ୍ତର',
+      visibilityGood: 'ଦୃଶ୍ୟମାନତା ଭଲ ଅଛି', visibilityReduced: 'ଦୃଶ୍ୟମାନତା କମିଛି',
+      currRoadVis: 'ରାସ୍ତା ଦୃଶ୍ୟମାନତା',
+      irrigationYes: 'ଆଜି ଜଳସେଚନ ଆବଶ୍ୟକ ହୋଇପାରେ', irrigationNo: 'ବର୍ଷା ଯୋଗୁଁ ଯଥେଷ୍ଟ ଆର୍ଦ୍ରତା ରହିବ',
+      soilCardNote: 'ମାଟିର ତଥ୍ୟ ସାଟେଲାଇଟ୍ ଆଧାରିତ। ସାର ଓ ପୋଷକ ତଥ୍ୟ ପାଇଁ ସଏଲ ହେଲଥ କାର୍ଡ ଦେଖନ୍ତୁ।',
+      notCoastal: '{city} ଉପକୂଳ ନୁହେଁ — ସମୁଦ୍ର ତଥ୍ୟ ପାଇଁ ପୁରୀ, ମୁମ୍ବାଇ ବା ଚେନ୍ନାଇ ବାଛନ୍ତୁ।'
+    }
+  }
+};
+
+/* State & Active Language */
+let currentLangCode = localStorage.getItem('mausam_lang') || 'en';
+if(!LANGUAGES[currentLangCode]) currentLangCode = 'en';
+
+function t(path, fallback=''){
+  const keys = path.split('.');
+  let cur = LANGUAGES[currentLangCode];
+  for(const k of keys){
+    if(cur && cur[k] !== undefined) cur = cur[k];
+    else {
+      let def = LANGUAGES.en;
+      for(const dk of keys){
+        if(def && def[dk] !== undefined) def = def[dk];
+        else return fallback;
+      }
+      return def;
+    }
+  }
+  return cur;
+}
+
+/* ---------- Indian City Coordinates (curated quick picks — full India covered via live search) ---------- */
+const CITIES = [
+  { id:'ranchi',       name:'Ranchi',          state:'Jharkhand',          lat:23.3441, lon:85.3096, coastal:false, tz:'Asia/Kolkata' },
+  { id:'delhi',        name:'New Delhi',       state:'Delhi',              lat:28.6139, lon:77.2090, coastal:false, tz:'Asia/Kolkata' },
+  { id:'mumbai',       name:'Mumbai',          state:'Maharashtra',        lat:19.0760, lon:72.8777, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'chennai',      name:'Chennai',         state:'Tamil Nadu',         lat:13.0827, lon:80.2707, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'bengaluru',    name:'Bengaluru',       state:'Karnataka',          lat:12.9716, lon:77.5946, coastal:false, tz:'Asia/Kolkata' },
+  { id:'kolkata',      name:'Kolkata',         state:'West Bengal',        lat:22.5726, lon:88.3639, coastal:false, tz:'Asia/Kolkata' },
+  { id:'goa',          name:'Panaji, Goa',     state:'Goa',                lat:15.4909, lon:73.8278, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'hyderabad',    name:'Hyderabad',       state:'Telangana',          lat:17.3850, lon:78.4867, coastal:false, tz:'Asia/Kolkata' },
+  { id:'pune',         name:'Pune',            state:'Maharashtra',        lat:18.5204, lon:73.8567, coastal:false, tz:'Asia/Kolkata' },
+  { id:'ahmedabad',    name:'Ahmedabad',       state:'Gujarat',            lat:23.0225, lon:72.5714, coastal:false, tz:'Asia/Kolkata' },
+  { id:'surat',        name:'Surat',           state:'Gujarat',            lat:21.1702, lon:72.8311, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'jaipur',       name:'Jaipur',          state:'Rajasthan',          lat:26.9124, lon:75.7873, coastal:false, tz:'Asia/Kolkata' },
+  { id:'lucknow',      name:'Lucknow',         state:'Uttar Pradesh',      lat:26.8467, lon:80.9462, coastal:false, tz:'Asia/Kolkata' },
+  { id:'kanpur',       name:'Kanpur',          state:'Uttar Pradesh',      lat:26.4499, lon:80.3319, coastal:false, tz:'Asia/Kolkata' },
+  { id:'varanasi',     name:'Varanasi',        state:'Uttar Pradesh',      lat:25.3176, lon:82.9739, coastal:false, tz:'Asia/Kolkata' },
+  { id:'bhopal',       name:'Bhopal',          state:'Madhya Pradesh',     lat:23.2599, lon:77.4126, coastal:false, tz:'Asia/Kolkata' },
+  { id:'indore',       name:'Indore',          state:'Madhya Pradesh',     lat:22.7196, lon:75.8577, coastal:false, tz:'Asia/Kolkata' },
+  { id:'patna',        name:'Patna',           state:'Bihar',              lat:25.5941, lon:85.1376, coastal:false, tz:'Asia/Kolkata' },
+  { id:'chandigarh',   name:'Chandigarh',      state:'Chandigarh',         lat:30.7333, lon:76.7794, coastal:false, tz:'Asia/Kolkata' },
+  { id:'ludhiana',     name:'Ludhiana',        state:'Punjab',             lat:30.9010, lon:75.8573, coastal:false, tz:'Asia/Kolkata' },
+  { id:'guwahati',     name:'Guwahati',        state:'Assam',              lat:26.1445, lon:91.7362, coastal:false, tz:'Asia/Kolkata' },
+  { id:'bhubaneswar',  name:'Bhubaneswar',     state:'Odisha',             lat:20.2961, lon:85.8245, coastal:false, tz:'Asia/Kolkata' },
+  { id:'thiruvananthapuram', name:'Thiruvananthapuram', state:'Kerala',    lat:8.5241,  lon:76.9366, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'kochi',        name:'Kochi',           state:'Kerala',             lat:9.9312,  lon:76.2673, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'coimbatore',   name:'Coimbatore',      state:'Tamil Nadu',         lat:11.0168, lon:76.9558, coastal:false, tz:'Asia/Kolkata' },
+  { id:'visakhapatnam',name:'Visakhapatnam',   state:'Andhra Pradesh',     lat:17.6868, lon:83.2185, coastal:true,  tz:'Asia/Kolkata' },
+  { id:'nagpur',       name:'Nagpur',          state:'Maharashtra',        lat:21.1458, lon:79.0882, coastal:false, tz:'Asia/Kolkata' },
+  { id:'raipur',       name:'Raipur',          state:'Chhattisgarh',       lat:21.2514, lon:81.6296, coastal:false, tz:'Asia/Kolkata' },
+  { id:'dehradun',     name:'Dehradun',        state:'Uttarakhand',        lat:30.3165, lon:78.0322, coastal:false, tz:'Asia/Kolkata' },
+  { id:'shimla',       name:'Shimla',          state:'Himachal Pradesh',   lat:31.1048, lon:77.1734, coastal:false, tz:'Asia/Kolkata' },
+  { id:'srinagar',     name:'Srinagar',        state:'Jammu & Kashmir',    lat:34.0837, lon:74.7973, coastal:false, tz:'Asia/Kolkata' },
+];
+const LONDON = { lat:51.5074, lon:-0.1278, tz:'Europe/London' };
+const POLL_MS = 5*60*1000;
+const FARM_POLL_MS = 15*60*1000;
+let weatherPollId = null, farmPollId = null, lastPollAt = Date.now();
+
+const personaIds = ['health', 'fitness', 'beach', 'travel', 'family', 'garden', 'commute', 'events'];
+let active = new Set(['fitness']);
+
+function loadSavedCity(){
+  try{
+    const raw = localStorage.getItem('mausam_city');
+    if(raw){
+      const c = JSON.parse(raw);
+      if(c && c.name && typeof c.lat === 'number' && typeof c.lon === 'number') return c;
+    }
+  }catch(e){}
+  return CITIES[0];
+}
+let currentCity = loadSavedCity();
+let live = { weather:null, air:null, marine:null, london:null, error:null };
+let farmState = { query:'', results:[], location:null, soil:null, error:null };
+
+function weatherInfo(code){
+  const iconMap = {
+    0:'ti-sun', 1:'ti-sun', 2:'ti-cloud', 3:'ti-cloud',
+    45:'ti-cloud-fog', 48:'ti-cloud-fog', 51:'ti-cloud-drizzle', 53:'ti-cloud-drizzle',
+    55:'ti-cloud-drizzle', 61:'ti-cloud-rain', 63:'ti-cloud-rain', 65:'ti-cloud-rain',
+    71:'ti-cloud-snow', 73:'ti-cloud-snow', 75:'ti-cloud-snow', 80:'ti-cloud-rain',
+    81:'ti-cloud-rain', 82:'ti-cloud-rain', 95:'ti-cloud-storm', 96:'ti-cloud-storm', 99:'ti-cloud-storm'
+  };
+  const text = t(`weather.${code}`) || t('weather.fallback') || 'Partly cloudy';
+  return [iconMap[code] || 'ti-cloud', text];
+}
+
+function aqiCategory(v){
+  if(v==null) return {text:'—', cls:''};
+  if(v<=50) return {text: t('aqi.good'), cls:'mt-good'};
+  if(v<=100) return {text: t('aqi.mod'), cls:'mt-warn'};
+  if(v<=150) return {text: t('aqi.sens'), cls:'mt-warn'};
+  if(v<=200) return {text: t('aqi.unh'), cls:'mt-danger'};
+  if(v<=300) return {text: t('aqi.vUnh'), cls:'mt-danger'};
+  return {text: t('aqi.haz'), cls:'mt-danger'};
+}
+
+function uvCategory(v){
+  if(v==null) return {text:'—', cls:''};
+  if(v<=2) return {text: t('uv.low'), cls:'mt-good'};
+  if(v<=5) return {text: t('uv.mod'), cls:'mt-warn'};
+  if(v<=7) return {text: t('uv.high'), cls:'mt-warn'};
+  if(v<=10) return {text: t('uv.vHigh'), cls:'mt-danger'};
+  return {text: t('uv.ext'), cls:'mt-danger'};
+}
+
+function comfortIndex(tC, rh){
+  if(tC==null || rh==null) return null;
+  const T = tC*9/5+32, R = rh;
+  let hiF = -42.379 + 2.04901523*T + 10.14333127*R - 0.22475541*T*R - 0.00683783*T*T
+    - 0.05481717*R*R + 0.00122874*T*T*R + 0.00085282*T*R*R - 0.00000199*T*T*R*R;
+  if(T < 80) hiF = T;
+  const hiC = (hiF-32)*5/9;
+  let label, cls;
+  if(hiC < 27){label=t('comfort.comfortable'); cls='mt-good';}
+  else if(hiC < 32){label=t('comfort.warm'); cls='mt-warn';}
+  else if(hiC < 39){label=t('comfort.hot'); cls='mt-danger';}
+  else {label=t('comfort.vHot'); cls='mt-danger';}
+  return {value:Math.round(hiC), label, cls};
+}
+
+function istHourString(offsetHours=0){
+  const ms = Date.now() + (5.5+offsetHours)*60*60000;
+  return new Date(ms).toISOString().slice(0,13)+':00';
+}
+
+function nearestHourIndex(timeArr, targetStr){
+  if(!timeArr) return -1;
+  let idx = timeArr.indexOf(targetStr);
+  if(idx !== -1) return idx;
+  const t = new Date(targetStr).getTime();
+  let best=0, bestDiff=Infinity;
+  timeArr.forEach((s,i)=>{ const d=Math.abs(new Date(s).getTime()-t); if(d<bestDiff){bestDiff=d;best=i;} });
+  return best;
+}
+
+function fmtHM(iso){
+  if(!iso) return '—';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleTimeString(LANGUAGES[currentLangCode]?.code || 'en-IN', {
+      hour: 'numeric', minute: '2-digit', hour12: true
+    });
+  } catch(e){
+    return iso.slice(11,16);
+  }
+}
+
+/* ---------- Data Fetching ---------- */
+async function fetchJSON(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return res.json();
+}
+
+async function loadCity(city){
+  live = { weather:null, air:null, marine:null, london:live.london, error:null };
+  heroExpanded = false;
+  expandedDay = null;
+  renderSourceLine('loading');
+  renderHero(true);
+  setSplashProgress(0.08, `${t('findingCity')} (${city.name})`);
+
+  const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}`
+    + `&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,surface_pressure,dew_point_2m,cloud_cover`
+    + `&daily=sunrise,sunset,uv_index_max,precipitation_probability_max,temperature_2m_min,temperature_2m_max,weather_code`
+    + `&hourly=soil_moisture_0_to_1cm,visibility,precipitation_probability,temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,apparent_temperature`
+    + `&minutely_15=precipitation`
+    + `&forecast_days=7&timezone=Asia%2FKolkata`;
+  const aUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}`
+    + `&current=pm2_5,pm10,us_aqi&timezone=Asia%2FKolkata`;
+  const mUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${city.lat}&longitude=${city.lon}`
+    + `&current=wave_height,wave_period,sea_surface_temperature&timezone=Asia%2FKolkata`;
+  const lUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LONDON.lat}&longitude=${LONDON.lon}`
+    + `&daily=precipitation_probability_max,temperature_2m_max&timezone=Europe%2FLondon`;
+
+  await fetchJSON(wUrl).then(d=>live.weather=d).catch(e=>live.error='weather');
+  setSplashProgress(0.42, t('readingSky'));
+
+  await fetchJSON(aUrl).then(d=>live.air=d).catch(e=>live.error='air');
+  setSplashProgress(0.72, t('checkingAir'));
+
+  const extra = [];
+  if(city.coastal) extra.push(fetchJSON(mUrl).then(d=>live.marine=d).catch(()=>{}));
+  if(!live.london) extra.push(fetchJSON(lUrl).then(d=>live.london=d).catch(()=>{}));
+  if(extra.length) await Promise.all(extra);
+
+  setSplashProgress(1, t('ready'));
+  renderHero(false);
+  lastPollAt = Date.now();
+  renderSourceLine(live.weather ? 'ok' : 'err');
+  renderAlert();
+  renderDynamic();
+  renderHourly();
+  renderDaily();
+}
+
+function setSplashProgress(pct, label){
+  const bar = document.getElementById('splashBar');
+  const lbl = document.getElementById('splashLabel');
+  const sun = document.getElementById('sunWrap');
+  const skyB = document.getElementById('skyB');
+  if(bar) bar.style.width = (pct*100)+'%';
+  if(sun) sun.style.top = (62 - pct*40)+'%';
+  if(skyB) skyB.style.opacity = Math.max(0, (pct-0.45)/0.55);
+  if(lbl && lbl.textContent !== label){
+    lbl.style.opacity = 0;
+    setTimeout(()=>{ lbl.textContent = label; lbl.style.opacity = 1; }, 160);
+  }
+}
+
+function renderSourceLine(state){
+  const el = document.getElementById('sourceLine');
+  const now = new Date().toLocaleTimeString(LANGUAGES[currentLangCode]?.code || 'en-IN',{hour:'2-digit',minute:'2-digit'});
+  if(state==='loading'){
+    el.className='source-line'; el.innerHTML = `<span class="dot"></span> ${t('loadingConditions')}`
+      + `<span class="refresh-btn spinning"><i class="ti ti-refresh"></i></span>`;
+  } else if(state==='err'){
+    el.className='source-line err';
+    el.innerHTML = `<span class="dot"></span> ${t('offlineNotice')} <button onclick="loadCity(currentCity)">${t('retry')}</button>`;
+  } else {
+    el.className='source-line';
+    el.innerHTML = `<span class="dot"></span> ${t('liveNotice').replace('{t}', now)}`
+      + `<button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" aria-label="${t('refresh')}"><i class="ti ti-refresh"></i></button>`;
+  }
+}
+
+function manualRefresh(){
+  loadCity(currentCity);
+  if(farmState.location) loadFarmSoil(farmState.location);
+}
+
+/* ---------- live clock ---------- */
+function tickClock(){
+  const el = document.getElementById('liveClock');
+  if(!el) return;
+  const tz = currentCity?.tz || 'Asia/Kolkata';
+  try{
+    el.textContent = new Date().toLocaleTimeString(LANGUAGES[currentLangCode]?.code || 'en-IN',
+      { hour:'2-digit', minute:'2-digit', second:'2-digit', timeZone: tz });
+  }catch(e){
+    el.textContent = new Date().toLocaleTimeString();
+  }
+}
+setInterval(tickClock, 1000);
+
+/* ---------- hourly strip + minute-level rain nowcast ---------- */
+function istMinuteString(offsetMinutes=0){
+  const ms = Date.now() + (5.5*60+offsetMinutes)*60000;
+  return new Date(ms).toISOString().slice(0,16);
+}
+
+function fmtHourShort(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleTimeString(LANGUAGES[currentLangCode]?.code || 'en-IN', { hour:'numeric' });
+  }catch(e){ return iso.slice(11,13); }
+}
+
+function renderNowcastBar(){
+  const w = live.weather;
+  const m = w?.minutely_15;
+  if(!m || !m.time || !m.precipitation) return '';
+  const startIdx = nearestHourIndex(m.time, istMinuteString(0));
+  if(startIdx < 0) return '';
+  const buckets = [];
+  for(let i=0;i<8;i++){
+    const idx = startIdx+i;
+    if(idx >= m.time.length) break;
+    buckets.push(m.precipitation[idx] ?? 0);
+  }
+  if(!buckets.length) return '';
+  const max = Math.max(1, ...buckets);
+  const anyRain = buckets.some(v=>v>0.05);
+  let summary;
+  if(!anyRain){
+    summary = t('labels.noRainSoon');
+  } else {
+    const firstRainIdx = buckets.findIndex(v=>v>0.05);
+    if(firstRainIdx===0) summary = t('labels.rainNow');
+    else summary = t('labels.rainStartingIn').replace('{m}', firstRainIdx*15);
+  }
+  const bars = buckets.map(v=>{
+    const h = Math.max(3, Math.round((v/max)*28));
+    return `<div class="nc-bar" style="height:${h}px"></div>`;
+  }).join('');
+  return `<div class="nowcast">
+    <p class="nc-summary"><i class="ti ti-cloud-rain"></i> ${summary}</p>
+    <div class="nc-bars">${bars}</div>
+  </div>`;
+}
+
+function renderHourly(){
+  const zone = document.getElementById('hourlySection');
+  if(!zone) return;
+  const w = live.weather;
+  if(!w || !w.hourly){ zone.innerHTML=''; return; }
+  const nowIdx = nearestHourIndex(w.hourly.time, istHourString(0));
+  if(nowIdx < 0){ zone.innerHTML=''; return; }
+  const cards = [];
+  for(let i=0;i<24;i++){
+    const idx = nowIdx+i;
+    if(idx >= w.hourly.time.length) break;
+    const [icon] = weatherInfo(w.hourly.weather_code?.[idx]);
+    const temp = Math.round(w.hourly.temperature_2m[idx]);
+    const pop = w.hourly.precipitation_probability?.[idx] ?? 0;
+    const timeLabel = i===0 ? t('labels.now') : fmtHourShort(w.hourly.time[idx]);
+    cards.push(`<div class="hour-card" onclick="openHourDetail(${idx})">
+      <p class="hc-time">${timeLabel}</p>
+      <i class="ti ${icon} hc-icon"></i>
+      <p class="hc-temp">${temp}°</p>
+      <p class="hc-pop ${pop>=30?'hc-pop-on':''}">${pop>0?pop+'%':''}</p>
+    </div>`);
+  }
+  zone.innerHTML = `<p class="section-label">${t('sections.hourly')}</p>
+    ${renderNowcastBar()}
+    <div class="hourly-strip">${cards.join('')}</div>`;
+}
+
+function openHourDetail(idx){
+  const w = live.weather;
+  if(!w || !w.hourly) return;
+  const time = w.hourly.time[idx];
+  const [icon, text] = weatherInfo(w.hourly.weather_code?.[idx]);
+  const temp = Math.round(w.hourly.temperature_2m[idx]);
+  const feels = w.hourly.apparent_temperature?.[idx];
+  const hum = w.hourly.relative_humidity_2m?.[idx];
+  const wind = w.hourly.wind_speed_10m?.[idx];
+  const pop = w.hourly.precipitation_probability?.[idx];
+  const sheet = document.getElementById('sheet');
+  sheet.innerHTML = `
+    <div class="sheet-handle"></div>
+    <p class="sheet-time">${fmtHM(time)}</p>
+    <div class="sheet-main"><i class="ti ${icon}"></i><span class="sheet-temp">${temp}°</span></div>
+    <p class="sheet-cond">${text}</p>
+    <div class="sheet-grid">
+      <div><p class="sg-label">${t('feels')}</p><p class="sg-value">${feels!=null?Math.round(feels)+'°':'—'}</p></div>
+      <div><p class="sg-label">${t('humidity')}</p><p class="sg-value">${hum!=null?hum+'%':'—'}</p></div>
+      <div><p class="sg-label">${t('labels.windNow')}</p><p class="sg-value">${wind!=null?Math.round(wind)+' km/h':'—'}</p></div>
+      <div><p class="sg-label">${t('labels.rainChanceToday')}</p><p class="sg-value">${pop!=null?pop+'%':'—'}</p></div>
+    </div>`;
+  document.getElementById('sheetOverlay').classList.add('open');
+}
+function closeSheet(){
+  document.getElementById('sheetOverlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('left-align');
+}
+
+/* ---------- City picker (search any city/town/village in India) ---------- */
+let citySearchState = { query:'', results:[] };
+let citySearchTimer = null;
+
+function openCityPicker(){
+  citySearchState = { query:'', results:[] };
+  const sheet = document.getElementById('sheet');
+  sheet.classList.add('left-align');
+  sheet.innerHTML = `
+    <div class="sheet-handle"></div>
+    <p class="city-picker-title">${t('changeLocation') || 'Change location'}</p>
+    <div class="city-search-row">
+      <i class="ti ti-search"></i>
+      <input type="text" id="cityPickerInput" placeholder="${t('citySearchPlaceholder') || 'Search any city, town or village in India'}" oninput="onCityPickerInput(event)" autocomplete="off">
+    </div>
+    <div class="city-results" id="cityPickerResults"></div>
+    <p class="city-picker-sublabel">${t('popularCities') || 'Popular cities'}</p>
+    <div class="popular-city-grid" id="popularCityGrid"></div>`;
+  renderPopularCityGrid();
+  document.getElementById('sheetOverlay').classList.add('open');
+  setTimeout(()=> document.getElementById('cityPickerInput')?.focus(), 260);
+}
+
+function renderPopularCityGrid(){
+  const grid = document.getElementById('popularCityGrid');
+  if(!grid) return;
+  grid.innerHTML = CITIES.map(c => `
+    <div class="popular-city-chip${currentCity.id===c.id ? ' current' : ''}" onclick="selectPopularCity('${c.id}')">${c.name}</div>
+  `).join('');
+}
+
+function selectPopularCity(id){
+  const c = CITIES.find(c=>c.id===id);
+  if(!c) return;
+  selectCity(c);
+  closeSheet();
+}
+
+function onCityPickerInput(e){
+  const q = e.target.value;
+  citySearchState.query = q;
+  clearTimeout(citySearchTimer);
+  const resultsEl = document.getElementById('cityPickerResults');
+  if(q.trim().length < 2){
+    citySearchState.results = [];
+    if(resultsEl) resultsEl.innerHTML = '';
+    return;
+  }
+  citySearchTimer = setTimeout(()=>searchCities(q), 350);
+}
+
+async function searchCities(q){
+  const resultsEl = document.getElementById('cityPickerResults');
+  if(resultsEl) resultsEl.innerHTML = `<div class="city-result-loading">${t('searching')}</div>`;
+  try{
+    const apiL = LANGUAGES[currentLangCode]?.apiLang || 'en';
+    // Open-Meteo's geocoding index covers India's cities, towns and villages (GeoNames-based),
+    // not just a fixed shortlist — so any place name in the country can be found here.
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=10&language=${apiL}&format=json&countryCode=IN`;
+    const d = await fetchJSON(url);
+    citySearchState.results = d.results || [];
+  }catch(e){
+    citySearchState.results = [];
+  }
+  renderCitySearchResults();
+}
+
+function renderCitySearchResults(){
+  const resultsEl = document.getElementById('cityPickerResults');
+  if(!resultsEl) return;
+  if(!citySearchState.results.length){
+    resultsEl.innerHTML = citySearchState.query.trim().length >= 2
+      ? `<div class="city-result-loading">${t('noMatch')}</div>` : '';
+    return;
+  }
+  resultsEl.innerHTML = citySearchState.results.map((r,i)=>`
+    <div class="city-result" onclick="pickSearchedCity(${i})">
+      <i class="ti ti-map-pin"></i>
+      <div><p class="cr-name">${r.name}</p><p class="cr-sub">${[r.admin2, r.admin1].filter(Boolean).join(', ') || 'India'}</p></div>
+    </div>`).join('');
+}
+
+function pickSearchedCity(i){
+  const r = citySearchState.results[i];
+  if(!r) return;
+  const city = {
+    id:'custom-' + r.id,
+    name:r.name,
+    state:r.admin1 || '',
+    lat:r.latitude,
+    lon:r.longitude,
+    coastal:false,
+    tz:'Asia/Kolkata'
+  };
+  selectCity(city);
+  closeSheet();
+}
+
+function selectCity(city){
+  currentCity = city;
+  try{ localStorage.setItem('mausam_city', JSON.stringify(city)); }catch(e){}
+  const label = document.getElementById('citySelectLabel');
+  if(label) label.textContent = city.name;
+  loadCity(currentCity);
+  syncFarmDefault(currentCity);
+}
+
+/* ---------- 7-day forecast ---------- */
+let expandedDay = null;
+function renderDaily(){
+  const zone = document.getElementById('dailySection');
+  if(!zone) return;
+  const w = live.weather;
+  if(!w || !w.daily){ zone.innerHTML=''; return; }
+  const days = w.daily.time.length;
+  const rows = [];
+  for(let i=0;i<days;i++){
+    const [icon, text] = weatherInfo(w.daily.weather_code?.[i]);
+    const max = Math.round(w.daily.temperature_2m_max[i]);
+    const min = Math.round(w.daily.temperature_2m_min[i]);
+    const pop = w.daily.precipitation_probability_max?.[i] ?? 0;
+    let dayLabel;
+    if(i===0) dayLabel = t('labels.today');
+    else {
+      try{ dayLabel = new Date(w.daily.time[i]).toLocaleDateString(LANGUAGES[currentLangCode]?.code || 'en-IN', {weekday:'short'}); }
+      catch(e){ dayLabel = w.daily.time[i].slice(5); }
+    }
+    const isOpen = expandedDay===i;
+    rows.push(`<div class="day-row ${isOpen?'open':''}">
+      <div class="day-row-main" onclick="toggleDay(${i})">
+        <p class="dr-day">${dayLabel}</p>
+        <i class="ti ${icon} dr-icon"></i>
+        <p class="dr-pop">${pop>0?pop+'%':''}</p>
+        <p class="dr-temp"><span class="dr-max">${max}°</span><span class="dr-min">${min}°</span></p>
+        <i class="ti ti-chevron-down dr-chev"></i>
+      </div>
+      <div class="day-row-detail">
+        <div class="dr-detail-grid">
+          <div><i class="ti ti-cloud"></i><p class="sg-value">${text}</p></div>
+          <div><i class="ti ti-sunrise"></i><p class="sg-value">${fmtHM(w.daily.sunrise[i])}</p></div>
+          <div><i class="ti ti-sunset"></i><p class="sg-value">${fmtHM(w.daily.sunset[i])}</p></div>
+          <div><i class="ti ti-sun"></i><p class="sg-value">UV ${w.daily.uv_index_max?.[i]!=null?w.daily.uv_index_max[i].toFixed(0):'—'}</p></div>
+        </div>
+      </div>
+    </div>`);
+  }
+  zone.innerHTML = `<p class="section-label">${t('sections.daily')}</p><div class="daily-list">${rows.join('')}</div>`;
+}
+function toggleDay(i){
+  expandedDay = expandedDay===i ? null : i;
+  renderDaily();
+}
+
+function renderHero(loading){
+  const hero = document.getElementById('hero');
+  if(loading){
+    hero.innerHTML = `<div class="load-note" style="background:transparent;border:none;color:#c7d6d3;">${t('loadingConditions')}</div>`;
+    return;
+  }
+  const w = live.weather;
+  if(!w){
+    hero.innerHTML = `<div class="load-note" style="background:transparent;border:none;color:#f0c9c2;">${t('conditionsFail')}</div>`;
+    return;
+  }
+  const cur = w.current;
+  const [icon, text] = weatherInfo(cur.weather_code);
+  hero.innerHTML = `
+    <div class="hero-top">
+      <div>
+        <div class="temp">${Math.round(cur.temperature_2m)}°</div>
+        <div class="cond">${text} · ${t('feels')} ${Math.round(cur.apparent_temperature)}°</div>
+      </div>
+      <i class="ti ${icon} hero-icon"></i>
+    </div>
+    <div class="sunline">
+      <span><i class="ti ti-sunrise"></i>${fmtHM(w.daily.sunrise[0])}</span>
+      <span><i class="ti ti-sunset"></i>${fmtHM(w.daily.sunset[0])}</span>
+      <span><i class="ti ti-droplet"></i>${cur.relative_humidity_2m}% ${t('humidity')}</span>
+    </div>
+    <i class="ti ti-chevron-down hero-chev"></i>`;
+  renderHeroExpand();
+}
+
+let heroExpanded = false;
+function toggleHeroExpand(){
+  if(!live.weather) return;
+  heroExpanded = !heroExpanded;
+  document.getElementById('hero').classList.toggle('expanded', heroExpanded);
+  renderHeroExpand();
+}
+function renderHeroExpand(){
+  const el = document.getElementById('heroExpand');
+  if(!el) return;
+  const w = live.weather;
+  if(!heroExpanded || !w){ el.classList.remove('open'); el.innerHTML=''; return; }
+  const cur = w.current;
+  el.innerHTML = `<div class="he-grid">
+    <div class="he-tile"><i class="ti ti-gauge"></i><p class="he-label">${t('labels.pressure')}</p><p class="he-value">${cur.surface_pressure!=null?Math.round(cur.surface_pressure):'—'}<span style="font-size:9px;"> hPa</span></p></div>
+    <div class="he-tile"><i class="ti ti-droplet-half-2"></i><p class="he-label">${t('labels.dewPoint')}</p><p class="he-value">${cur.dew_point_2m!=null?Math.round(cur.dew_point_2m)+'°':'—'}</p></div>
+    <div class="he-tile"><i class="ti ti-cloud"></i><p class="he-label">${t('labels.cloudCover')}</p><p class="he-value">${cur.cloud_cover!=null?cur.cloud_cover+'%':'—'}</p></div>
+    <div class="he-tile"><i class="ti ti-wind"></i><p class="he-label">${t('labels.gusts')}</p><p class="he-value">${cur.wind_gusts_10m!=null?Math.round(cur.wind_gusts_10m):'—'}<span style="font-size:9px;"> km/h</span></p></div>
+  </div>`;
+  el.classList.add('open');
+}
+
+function renderAlert(){
+  const slot = document.getElementById('alertSlot');
+  const w = live.weather;
+  if(!w){ slot.innerHTML=''; return; }
+  const maxT = w.daily.temperature_2m_max[0];
+  const rainProb = w.daily.precipitation_probability_max[0];
+  const uv = w.daily.uv_index_max[0];
+  let msg = null;
+  if(maxT >= 38) {
+    msg = { icon:'ti-temperature-sun', text:`${Math.round(maxT)}°C — ${t('comfort.vHot')}` };
+  } else if(rainProb >= 70) {
+    msg = { icon:'ti-cloud-rain', text:`${rainProb}% ${t('labels.rainChanceToday')}` };
+  } else if(uv >= 9) {
+    msg = { icon:'ti-sun', text:`UV ${Math.round(uv)} — ${t('uv.vHigh')}` };
+  }
+  slot.innerHTML = msg ? `<div class="alert"><i class="ti ${msg.icon}"></i><span>${msg.text}</span></div>` : '';
+}
+
+/* ---------- Farm Search & Soil ---------- */
+let farmSearchTimer = null;
+
+function onFarmSearchInput(e){
+  const q = e.target.value;
+  farmState.query = q;
+  clearTimeout(farmSearchTimer);
+  const resultsEl = document.getElementById('farmResults');
+  if(q.trim().length < 2){
+    farmState.results = [];
+    if(resultsEl) resultsEl.innerHTML = '';
+    return;
+  }
+  farmSearchTimer = setTimeout(()=>searchVillages(q), 400);
+}
+
+async function searchVillages(q){
+  const resultsEl = document.getElementById('farmResults');
+  if(resultsEl) resultsEl.innerHTML = `<div class="farm-result-loading">${t('searching')}</div>`;
+  try{
+    const apiL = LANGUAGES[currentLangCode]?.apiLang || 'en';
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${apiL}&format=json&countryCode=IN`;
+    const d = await fetchJSON(url);
+    farmState.results = d.results || [];
+  }catch(e){
+    farmState.results = [];
+  }
+  renderFarmResults();
+}
+
+function renderFarmResults(){
+  const resultsEl = document.getElementById('farmResults');
+  if(!resultsEl) return;
+  if(!farmState.results.length){
+    resultsEl.innerHTML = farmState.query.trim().length >= 2
+      ? `<div class="farm-result-loading">${t('noMatch')}</div>` : '';
+    return;
+  }
+  resultsEl.innerHTML = farmState.results.map((r,i)=>`
+    <div class="farm-result" onclick="pickVillage(${i})">
+      <p class="fr-name">${r.name}</p>
+      <p class="fr-sub">${[r.admin2, r.admin1, r.country].filter(Boolean).join(', ')}</p>
+    </div>`).join('');
+}
+
+function pickVillage(i){
+  const r = farmState.results[i];
+  if(!r) return;
+  farmState.results = [];
+  farmState.query = '';
+  loadFarmSoil({ name:r.name, admin1:r.admin1, lat:r.latitude, lon:r.longitude, isCustom:true });
+}
+
+async function loadFarmSoil(loc){
+  farmState.location = loc;
+  farmState.soil = null;
+  farmState.error = null;
+  renderDynamic();
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}`
+    + `&daily=precipitation_sum,temperature_2m_min,temperature_2m_max`
+    + `&hourly=soil_moisture_0_to_1cm,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm,soil_temperature_6cm,et0_fao_evapotranspiration`
+    + `&forecast_days=7&timezone=Asia%2FKolkata`;
+  try{
+    farmState.soil = await fetchJSON(url);
+  }catch(e){
+    farmState.error = 'soil';
+  }
+  renderDynamic();
+}
+
+function syncFarmDefault(city){
+  if(farmState.location && farmState.location.isCustom) return;
+  loadFarmSoil({ name:city.name, state:city.state, lat:city.lat, lon:city.lon, isCustom:false });
+}
+
+/* Polling */
+function startPolling(){
+  stopPolling();
+  weatherPollId = setInterval(()=> loadCity(currentCity), POLL_MS);
+  farmPollId = setInterval(()=>{ if(farmState.location) loadFarmSoil(farmState.location); }, FARM_POLL_MS);
+}
+function stopPolling(){
+  if(weatherPollId) clearInterval(weatherPollId);
+  if(farmPollId) clearInterval(farmPollId);
+  weatherPollId = farmPollId = null;
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden){
+    stopPolling();
+  } else {
+    if(Date.now() - lastPollAt > POLL_MS){
+      loadCity(currentCity);
+      if(farmState.location) loadFarmSoil(farmState.location);
+    }
+    startPolling();
+  }
+});
+
+/* ---------- Card Renderers with Translations ---------- */
+function cardFitness(){
+  const w = live.weather;
+  if(!w) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  const sunrise = w.daily.sunrise[0];
+  const [sh, sm] = sunrise.slice(11,16).split(':').map(Number);
+  let endH = sh + 1, endM = sm;
+  if(endH > 23) endH -= 24;
+  const endStr = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
+  const windNow = Math.round(w.current.wind_speed_10m);
+  return `<div class="pair">
+    <div class="stat-tile"><i class="ti ti-clock-hour-4"></i><p class="st-label">${t('labels.bestWindow')}</p><p class="st-value">${fmtHM(sunrise)}–${fmtHM(sunrise.slice(0,11)+endStr)}</p></div>
+    <div class="stat-tile"><i class="ti ti-wind"></i><p class="st-label">${t('labels.windNow')}</p><p class="st-value">${windNow} km/h</p></div>
+  </div>`;
+}
+
+function cardHealth(){
+  const a = live.air, w = live.weather;
+  if(!a || !w) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  const aqi = a.current.us_aqi;
+  const aqiCat = aqiCategory(aqi);
+  const uv = w.daily.uv_index_max[0];
+  const uvCat = uvCategory(uv);
+  return `<div class="triple">
+    <div class="mini-tile"><p class="mt-label">US AQI</p><p class="mt-value ${aqiCat.cls}">${aqi ?? '—'}</p></div>
+    <div class="mini-tile"><p class="mt-label">PM2.5</p><p class="mt-value">${a.current.pm2_5?.toFixed(0) ?? '—'} µg/m³</p></div>
+    <div class="mini-tile"><p class="mt-label">${t('labels.uvIndex')}</p><p class="mt-value ${uvCat.cls}">${uv?.toFixed(0) ?? '—'} · ${uvCat.text}</p></div>
+  </div>`;
+}
+
+function cardBeach(){
+  if(!currentCity.coastal) return `<div class="empty-note">${t('labels.notCoastal').replace('{city}', currentCity.name)}</div>`;
+  const m = live.marine;
+  if(!m) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  return `<div class="stack">
+    <div class="row-card"><i class="ti ti-wave-saw-tool lead"></i><div><p class="rc-title">${t('labels.waveHeight')}</p><p class="rc-sub">${t('labels.wavePeriod')} ${m.current.wave_period?.toFixed(1) ?? '—'}s</p></div><div class="rc-value">${m.current.wave_height?.toFixed(1) ?? '—'}m</div></div>
+    <div class="row-card"><i class="ti ti-thermometer lead"></i><div><p class="rc-title">${t('labels.seaTemp')}</p><p class="rc-sub">${currentCity.name}</p></div><div class="rc-value">${m.current.sea_surface_temperature?.toFixed(1) ?? '—'}°C</div></div>
+  </div>`;
+}
+
+function cardTravel(){
+  const l = live.london;
+  let tip = '...';
+  if(l){
+    const rp = l.daily.precipitation_probability_max[0];
+    const mx = Math.round(l.daily.temperature_2m_max[0]);
+    tip = `${rp}% · ${mx}°C`;
+  }
+  return `<div class="stack">
+    <div class="row-card"><i class="ti ti-plane lead"></i><div><p class="rc-title">London</p><p class="rc-sub">${tip}</p></div></div>
+  </div>`;
+}
+
+function cardFamily(){
+  const w = live.weather;
+  if(!w) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  const idx = nearestHourIndex(w.hourly.time, istHourString(0).slice(0,11)+'15:00');
+  const rp = w.hourly.precipitation_probability?.[idx];
+  const msg = rp!=null && rp>=40 ? `${t('weather.63')} (${rp}%)` : `${t('weather.0')}`;
+  return `<div class="row-card"><i class="ti ti-bus lead"></i><div><p class="rc-title">${msg}</p><p class="rc-sub">15:00 IST</p></div></div>`;
+}
+
+function cardGarden(){
+  let html = `<div class="farm-search-wrap">
+    <div class="farm-search-row">
+      <i class="ti ti-search"></i>
+      <input id="villageInput" type="text" placeholder="${t('searchVillagePlaceholder')}" value="${farmState.query.replace(/"/g,'&quot;')}" oninput="onFarmSearchInput(event)">
+    </div>
+    <div class="farm-results" id="farmResults"></div>
+  </div>`;
+
+  const loc = farmState.location;
+  if(farmState.error === 'soil'){
+    html += `<div class="err-note">${t('conditionsFail')}</div>`;
+    return html;
+  }
+  if(!loc || !farmState.soil){
+    html += `<div class="load-note">${t('loadingConditions')}</div>`;
+    return html;
+  }
+
+  const s = farmState.soil;
+  const idx = nearestHourIndex(s.hourly.time, istHourString(0));
+  const surface = s.hourly.soil_moisture_0_to_1cm?.[idx];
+  const root = s.hourly.soil_moisture_3_to_9cm?.[idx];
+  const deep = s.hourly.soil_moisture_9_to_27cm?.[idx];
+  const soilTemp = s.hourly.soil_temperature_6cm?.[idx];
+  const minT = Math.min(...s.daily.temperature_2m_min);
+  const frost = minT <= 2;
+  const rain7 = s.daily.precipitation_sum.reduce((a,b)=>a+(b||0),0);
+
+  const todayStr = istHourString(0).slice(0,10);
+  let et0Today = 0;
+  s.hourly.time.forEach((tStr,i)=>{ if(tStr.startsWith(todayStr) && s.hourly.et0_fao_evapotranspiration?.[i]!=null) et0Today += s.hourly.et0_fao_evapotranspiration[i]; });
+  const rainToday = s.daily.precipitation_sum[0] ?? 0;
+  const needsIrrigation = et0Today > (rainToday + 1);
+
+  const mLabel = v => v==null ? '—' : v<0.15 ? t('soilMoisture.dry') : v<0.30 ? t('soilMoisture.adequate') : t('soilMoisture.wet');
+  const mCls = v => v==null ? '' : v<0.15 ? 'mt-warn' : v<0.30 ? 'mt-good' : 'mt-warn';
+
+  html += `<p class="farm-location-line"><i class="ti ti-map-pin-filled"></i> ${
+    loc.isCustom
+      ? `${loc.name}${loc.admin1 ? ', '+loc.admin1 : ''}`
+      : `${loc.name}${loc.state ? ', '+loc.state : ''}`
+  }</p>`;
+
+  html += `<div class="triple">
+    <div class="mini-tile"><p class="mt-label">${t('labels.surface')}</p><p class="mt-value ${mCls(surface)}">${mLabel(surface)}</p></div>
+    <div class="mini-tile"><p class="mt-label">${t('labels.rootZone')}</p><p class="mt-value ${mCls(root)}">${mLabel(root)}</p></div>
+    <div class="mini-tile"><p class="mt-label">${t('labels.deepSoil')}</p><p class="mt-value ${mCls(deep)}">${mLabel(deep)}</p></div>
+  </div>
+
+  <div class="stack" style="margin-top:9px;">
+    <div class="row-card"><i class="ti ti-thermometer lead"></i><div><p class="rc-title">${t('labels.soilTemp')}</p><p class="rc-sub">6cm</p></div><div class="rc-value">${soilTemp!=null ? soilTemp.toFixed(1)+'°C' : '—'}</div></div>
+    <div class="row-card"><i class="ti ti-droplet-up lead"></i><div><p class="rc-title">${needsIrrigation ? t('labels.irrigationYes') : t('labels.irrigationNo')}</p><p class="rc-sub">${et0Today.toFixed(1)}mm / ${rainToday.toFixed(1)}mm</p></div></div>
+    <div class="row-card"><i class="ti ti-cloud-rain lead"></i><div><p class="rc-title">${t('labels.rain7Days')}</p></div><div class="rc-value">${rain7.toFixed(0)}mm</div></div>
+    <div class="row-card"><i class="ti ti-snowflake lead"></i><div><p class="rc-title">${t('labels.frostRisk')}</p><p class="rc-sub">Min: ${minT.toFixed(0)}°C</p></div><div class="rc-value">${frost ? t('labels.atRisk') : t('labels.none')}</div></div>
+  </div>
+  <p style="font-size:11px;color:var(--ink-mute);margin:10px 2px 0;">${t('labels.soilCardNote')}</p>`;
+
+  return html;
+}
+
+function cardCommute(){
+  const w = live.weather;
+  if(!w) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  const idx = nearestHourIndex(w.hourly.time, istHourString(0));
+  const vis = w.hourly.visibility?.[idx];
+  const visKm = vis!=null ? (vis/1000).toFixed(1) : null;
+  const foggy = vis!=null && vis < 1000;
+  return `<div class="row-card"><i class="ti ti-car lead"></i><div><p class="rc-title">${foggy ? t('labels.visibilityReduced') : t('labels.visibilityGood')}</p><p class="rc-sub">${t('labels.currRoadVis')}</p></div><div class="rc-value">${visKm ? visKm+' km' : '—'}</div></div>`;
+}
+
+function cardEvents(){
+  const w = live.weather;
+  if(!w) return `<div class="err-note">${t('conditionsFail')}</div>`;
+  const rp = w.daily.precipitation_probability_max[0];
+  const ci = comfortIndex(w.current.temperature_2m, w.current.relative_humidity_2m);
+  return `<div class="pair">
+    <div class="stat-tile"><i class="ti ti-umbrella"></i><p class="st-label">${t('labels.rainChanceToday')}</p><p class="st-value">${rp}%</p></div>
+    <div class="stat-tile"><i class="ti ti-mood-smile"></i><p class="st-label">${t('labels.comfortIndex')}</p><p class="st-value ${ci?.cls ?? ''}">${ci ? ci.label : '—'}</p></div>
+  </div>`;
+}
+
+const CARD_DEFS = [
+  { tag:'fitness', render:cardFitness },
+  { tag:'health', render:cardHealth },
+  { tag:'beach', render:cardBeach },
+  { tag:'travel', sample:true, render:cardTravel },
+  { tag:'family', render:cardFamily },
+  { tag:'garden', render:cardGarden },
+  { tag:'commute', render:cardCommute },
+  { tag:'events', render:cardEvents },
+];
+
+function sectionBlock(def){
+  const title = t(`sections.${def.tag}`) || def.tag;
+  const tag = def.sample ? `<span class="tag-sample">${t('sampleData')}</span>` : '';
+  return `<div class="section"><p class="section-label">${title}${tag}</p>${def.render()}</div>`;
+}
+
+function renderDynamic(){
+  const zone = document.getElementById('dynamic');
+  zone.classList.add('fading');
+  setTimeout(()=>{
+    const chosen = CARD_DEFS.filter(c => active.has(c.tag));
+    const rest = CARD_DEFS.filter(c => !active.has(c.tag)).slice(0,3);
+    let html = '';
+    if(chosen.length === 0){
+      html += `<div class="empty-note">${t('emptyHome')}</div>`;
+    } else {
+      chosen.forEach(c=>{ html += sectionBlock(c); });
+    }
+    if(rest.length){
+      const discCards = rest.map(c => `<div class="disc-card"><i class="ti ti-sparkles"></i><p>${t(`sections.${c.tag}`)}</p></div>`).join('');
+      html += `<div class="section"><p class="section-label">${t('discover')}</p><div class="discover-strip">${discCards}</div></div>`;
+    }
+    zone.innerHTML = html;
+    requestAnimationFrame(()=> zone.classList.remove('fading'));
+  }, 160);
+}
+
+function renderChips(){
+  const chipRow = document.getElementById('chiprow');
+  chipRow.innerHTML = '';
+  personaIds.forEach(id=>{
+    const el = document.createElement('div');
+    el.className = 'chip' + (active.has(id) ? ' on' : '');
+    el.textContent = t(`categories.${id}`) || id;
+    el.addEventListener('click', ()=>{
+      const wasOn = active.has(id);
+      active.clear();
+      if(!wasOn) active.add(id);
+      renderChips();
+      renderDynamic();
+    });
+    chipRow.appendChild(el);
+  });
+}
+
+function loadSavedName(){
+  try{
+    const n = localStorage.getItem('mausam_name');
+    if(n && n.trim()) return n.trim();
+  }catch(e){}
+  return 'Aditi';
+}
+let userName = loadSavedName();
+
+function updateGreeting(){
+  const hour = new Date().getHours();
+  const timeKey = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  const greetWord = t(`greetings.${timeKey}`);
+  document.getElementById('greeting').textContent = `${greetWord}, ${userName}`;
+  document.getElementById('avatarLetter').textContent = userName.trim().charAt(0).toUpperCase() || 'A';
+  document.getElementById('splashWord').textContent = t('appTitle');
+  document.getElementById('splashTag').textContent = t('appTag');
+}
+
+function openNamePicker(){
+  const sheet = document.getElementById('sheet');
+  sheet.classList.add('left-align');
+  sheet.innerHTML = `
+    <div class="sheet-handle"></div>
+    <p class="city-picker-title">${t('editNameTitle') || 'Your name'}</p>
+    <div class="sheet-input-row">
+      <i class="ti ti-user"></i>
+      <input type="text" id="namePickerInput" placeholder="${t('namePlaceholder') || 'Enter your name'}" value="${userName.replace(/"/g,'&quot;')}" autocomplete="off" maxlength="24">
+    </div>
+    <button class="sheet-primary-btn" id="nameSaveBtn" onclick="submitNameEdit()">${t('save') || 'Save'}</button>`;
+  document.getElementById('sheetOverlay').classList.add('open');
+  const input = document.getElementById('namePickerInput');
+  setTimeout(()=>{ input?.focus(); input?.select(); }, 260);
+  input?.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') submitNameEdit(); });
+}
+
+function submitNameEdit(){
+  const input = document.getElementById('namePickerInput');
+  if(!input) return;
+  const val = input.value.trim();
+  if(!val) return;
+  userName = val.slice(0, 24);
+  try{ localStorage.setItem('mausam_name', userName); }catch(e){}
+  updateGreeting();
+  closeSheet();
+}
+
+function setLanguage(langCode){
+  if(!LANGUAGES[langCode]) return;
+  currentLangCode = langCode;
+  localStorage.setItem('mausam_lang', langCode);
+  document.documentElement.lang = langCode;
+
+  updateGreeting();
+  renderChips();
+  renderHero(false);
+  renderSourceLine(live.weather ? 'ok' : 'err');
+  renderAlert();
+  renderDynamic();
+}
+
+/* ---------- Setup UI Selectors ---------- */
+const langSelect = document.getElementById('langSelect');
+Object.keys(LANGUAGES).forEach(k => {
+  const opt = document.createElement('option');
+  opt.value = k;
+  opt.textContent = `${LANGUAGES[k].native} (${LANGUAGES[k].name})`;
+  if(k === currentLangCode) opt.selected = true;
+  langSelect.appendChild(opt);
+});
+langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+
+document.getElementById('citySelectLabel').textContent = currentCity.name;
+
+/* Init */
+updateGreeting();
+renderChips();
+tickClock();
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const minSplash = new Promise(res => setTimeout(res, reduceMotion ? 0 : 1100));
+const firstLoad = loadCity(currentCity);
+syncFarmDefault(currentCity);
+startPolling();
+
+Promise.all([minSplash, firstLoad]).then(()=>{
+  const reveal = ()=>{
+    document.getElementById('splash').classList.add('leaving');
+    setTimeout(()=> document.getElementById('scrollRoot').classList.add('in'), 180);
+  };
+  if(reduceMotion) reveal();
+  else setTimeout(reveal, 260);
+});
+</script>
+
+</body>
+</html>
